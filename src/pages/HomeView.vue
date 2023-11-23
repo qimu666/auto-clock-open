@@ -3,7 +3,7 @@
     <van-search v-model="value" placeholder="请输入搜索关键词"/>
     <div class="grid grid-cols-2 mt-3 sm:grid-cols-4 lg:grid-cols-3 gap-3">
       <div v-for="item in data.shopData" class="bg-white h-40 rounded" @click="clickTabBar(item.id)">
-        <a :href="item.url">
+        <div @click="router.push(`${item.url}`)">
           <div class="flex justify-center items-center mt-4">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor"
@@ -21,7 +21,7 @@
             <p v-if="item.type==='day'">天</p>
             <p v-else>打卡结束</p>
           </div>
-        </a>
+        </div>
       </div>
     </div>
     <br/>
@@ -32,7 +32,9 @@
 
 <script setup lang="ts">
 import {reactive, ref} from "vue";
+import {useRouter} from "vue-router";
 
+const router = useRouter();
 const clickTabBar = (index: any) => {
   data.activeIndex = index;
 };

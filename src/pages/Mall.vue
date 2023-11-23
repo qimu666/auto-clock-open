@@ -7,14 +7,14 @@
     <!--    <br>-->
     <!--    <br>-->
     <!--    <div style="width: 300px;">-->
-    <!--      <van-progress-->
-    <!--          :percentage="progressVal <0 ?0:progressVal"-->
-    <!--          :pivot-text="text"-->
-    <!--          layer-color="#ebedf0"-->
-    <!--      />-->
+    <!--    <van-progress-->
+    <!--        :percentage="progressVal <0 ?0:progressVal"-->
+    <!--        :pivot-text="text"-->
+    <!--        layer-color="#ebedf0"-->
+    <!--    />-->
     <!--    </div>-->
     <div class="grid grid-cols-2 mt-3 sm:grid-cols-4 lg:grid-cols-3 gap-3">
-      <div v-for="item in state.coinData" @click="clickTabBar(item.amount,item.id)"
+      <div v-for="item in state.coinData" @click="clickTabBar(item)"
            class="h-40 rounded bg-white">
         <div class="flex justify-center items-center mt-4">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -39,12 +39,12 @@
         tip="本商品为虚拟内容,用于平台运转费用,购买后不支持退换。"
         :price="price" button-text="提交订单" @submit="onSubmit"/>
   </div>
-
 </template>
 
 <script setup lang="ts">
 import {computed, reactive, ref} from "vue";
 import {showToast} from "vant";
+import {useUserStore} from '../stores/user'
 
 const progressVal = ref(0);
 const residual = ref(2);
@@ -68,7 +68,9 @@ const notAdd = (val: number) => {
 }
 progressVal.value = Number(((residual.value / countDay.value) * 100).toFixed(2))
 const price = ref(0);
+
 const state = reactive({
+  addCoin: 0,
   activeIndex: null,
   coinData: [
     {
@@ -91,22 +93,23 @@ const state = reactive({
 
 });
 
-const clickTabBar = (val: any, index: any) => {
-  price.value = val
-  state.activeIndex = index;
+const clickTabBar = (item) => {
+  price.value = item.amount
+  state.activeIndex = item.id;
+  state.addCoin = item.addCoin
 };
 
 computed(() => {
-
   return
 });
-
+const user = useUserStore()
 const onSubmit = () => {
   if (price.value <= 0 && !state.activeIndex) {
     showToast("请先选择积分规格")
     return
   }
   showToast("共" + price.value / 100 + "元")
+  user.coin += state.addCoin
 };
 </script>
 

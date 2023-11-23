@@ -3,25 +3,58 @@
     <van-form @submit="onSubmit">
       <van-cell-group inset>
         <van-field
-            v-model="state.clockInfo.userName"
-            name="userName"
+            v-model="state.initClockInfo.phone"
+            name="phone"
             label="工学云账号："
             placeholder="工学云账号"
             :rules="[{ required: true, message: '请填写用户名' }]"
         />
         <van-field
-            v-model="state.clockInfo.password"
+            v-model="state.initClockInfo.password"
             type="password"
             name="password"
             label="工学云密码："
             placeholder="工学云密码"
             :rules="[{ required: true, message: '请填写密码' }]"
         />
-        <van-cell center title="一键获取账号信息：">
+        <van-cell center title="一键获取账号信息">
           <template #right-icon>
-            <van-switch size="22px" :loading="state.loading" @click="getClockInfo" v-model="state.checked"/>
+            <van-switch size="22px" :loading="state.loading" @click="getClockInfo" v-model="state.getClockInfoStatus"/>
           </template>
         </van-cell>
+        <van-collapse v-model="doClockInfo">
+          <van-collapse-item title="打卡信息：" value="一键获取 / 自己填写 " name="1">
+            <van-field
+                v-model="state.initClockInfo.jobAddress"
+                name="jobAddress"
+                label="公司地址："
+                placeholder="自动获取公司地址或者自定义地址"
+                :rules="[{ required: true, message: '请填写公司地址' }]"
+            />
+            <van-field
+                v-model="state.initClockInfo.clockAddress"
+                name="clockAddress"
+                label="打卡地址："
+                placeholder="省 · 市 · 区 · 在xxx附近"
+                :rules="[{ required: true, message: '请填写打卡地址' }]"
+            />
+            <van-field
+                v-model="state.initClockInfo.longitude"
+                label="经度："
+                readonly
+                placeholder="经度（根据公司地址自动生成）"
+                :rules="[{ required: true, message: '请填写经度' }]"
+            />
+            <van-field
+                v-model="state.initClockInfo.latitude"
+                name="latitude"
+                readonly
+                label="纬度："
+                placeholder="纬度（根据公司地址自动生成）"
+                :rules="[{ required: true, message: '请填写纬度' }]"
+            />
+          </van-collapse-item>
+        </van-collapse>
         <van-field
             v-model="state.clockInfo.startTime"
             is-link
@@ -30,6 +63,7 @@
             label="上班打卡："
             placeholder="点击选择上班打卡时间"
             @click="startTimeShow = true"
+            :rules="[{ required: true, message: '请填写上班打卡时间' }]"
         />
         <van-field
             v-model="state.clockInfo.endTime"
@@ -39,36 +73,6 @@
             label="下班打卡："
             placeholder="点击选择上班打卡时间"
             @click="endTimeShow = true"
-        />
-        <!--        <van-cell center title="地图选址：">-->
-        <!--          <template #right-icon>-->
-        <!--            <van-switch size="22px" v-model="show"/>-->
-        <!--          </template>-->
-        <!--        </van-cell>-->
-        <van-field
-            v-model="state.clockInfo.jobAddress"
-            name="jobAddress"
-            label="公司地址："
-            placeholder="自动获取公司地址或者自定义地址"
-        />
-        <van-field
-            v-model="state.clockInfo.clockAddress"
-            name="clockAddress"
-            label="打卡地址："
-            placeholder="省 · 市 · 区 · 在xxx附近"
-        />
-        <van-field
-            v-model="state.clockInfo.longitude"
-            label="经度："
-            readonly
-            placeholder="经度（根据公司地址自动生成）"
-        />
-        <van-field
-            v-model="state.clockInfo.latitude"
-            name="latitude"
-            readonly
-            label="纬度："
-            placeholder="纬度（根据公司地址自动生成）"
         />
         <van-field name="clockDay" label="打卡周期">
           <template #input>
@@ -94,85 +98,132 @@
             <van-stepper v-model="state.clockInfo.clockDays"/>
           </template>
         </van-field>
+        <van-collapse v-model="getDevice">
+          <van-collapse-item title="获取设备信息（可选）" name="1">
+            <van-cell-group class="mx-4 text-sm">
+              连接地址：<a href="https://www.123pan.com/s/XrbBjv-ns0E3.html" target="_blank"
+                          class="text-blue-400">下载获取设备信息软件</a>
+            </van-cell-group>
+            <van-field
+                v-model="state.clockInfo.device"
+                name="device"
+                label="设备信息："
+                placeholder="下载软件后复制填入"
+            />
+          </van-collapse-item>
+        </van-collapse>
+        <van-collapse v-model="massagePush">
+          <van-collapse-item title="消息推送（可选）" name="1">
+            <van-field
+                v-model="state.clockInfo.email"
+                name="email"
+                label="邮箱："
+                placeholder="邮箱地址"
+            />
+            <van-field
+                v-model="state.clockInfo.pushPushToken"
+                name="pushplusToken"
+                label="微信推送Token："
+                placeholder="pushplus微信推送Token"
+            />
+          </van-collapse-item>
+        </van-collapse>
+
       </van-cell-group>
       <br>
       <van-cell-group inset>
-        <van-field name="startDayly" label="日报：">
+        <van-field name="startDayLyNewspaper" label="日报：">
           <template #input>
-            <van-switch  size="22px" v-model="state.clockInfo.startDayly"/>
+            <van-switch size="22px" v-model="state.clockInfo.startDayLyNewspaper"/>
             &nbsp;每天提交
           </template>
         </van-field>
-        <van-field name="startWeekly" label="周报：">
+        <van-field name="startWeekLyNewspaper" label="周报：">
           <template #input>
-            <van-switch  size="22px"  v-model="state.clockInfo.startWeekly"/>
+            <van-switch size="22px" v-model="state.clockInfo.startWeekLyNewspaper"/>
             &nbsp;每周最后一天提交
           </template>
         </van-field>
-        <van-field name="startMonthly" label="月报：">
+        <van-field name="startMonthLyNewspaper" label="月报：">
           <template #input>
-            <van-switch  size="22px" v-model="state.clockInfo.startMonthly"/>
+            <van-switch size="22px" v-model="state.clockInfo.startMonthLyNewspaper"/>
             &nbsp;每月最后一天提交
           </template>
         </van-field>
         <van-field name="reportSource" label="报告来源">
           <template #input>
             <van-radio-group v-model="state.clockInfo.reportSource" direction="horizontal">
-              <van-radio @click="doReportSourceShowC" name="1">定制化报告</van-radio>
+              <van-radio @click="getReportSourceByAi" name="1">AI定制化报告</van-radio>
               <br>
-              <van-radio @click="doReportSourceShowA" name="2">报告库</van-radio>
+              <van-radio @click="getReportSourceByLibrary" name="2">报告库</van-radio>
               <br>
-              <van-radio @click="doReportSourceShowB" name="3">自己填写</van-radio>
+              <van-radio @click="getReportSourceByYour" name="3">自己填写</van-radio>
             </van-radio-group>
           </template>
         </van-field>
       </van-cell-group>
-      <van-action-sheet v-model:show="reportSourceShowC" title="定制化报告">
-        <van-collapse v-model="activeNames" accordion>
+      <van-action-sheet v-model:show="showReportSourceByAi" title="AI定制化报告">
+        <div v-if="!state.generatingReport">
           <van-field
-              v-model="state.clockInfo.jobName"
+              v-model="state.initClockInfo.jobName"
               name="weekPosition"
               label="职位"
               readonly
               placeholder="职位"
           />
-        </van-collapse>
-        <van-field name="startDayly" label="日报：">
-          <template #right-icon>
-            <van-switch v-model="state.clockInfo.startDayly"/>
-          </template>
-        </van-field>
-        <van-field name="startWeekly" label="周报：">
-          <template #right-icon>
-            <van-switch v-model="state.clockInfo.startWeekly"/>
-          </template>
-        </van-field>
-        <van-field name="startMonthly" label="月报：">
-          <template #right-icon>
-            <van-switch v-model="state.clockInfo.startMonthly"/>
-          </template>
-        </van-field>
-        <div class="mx-2 mt-5">
-          <van-button plain type="primary" @click="generateAReport" block>生成报告</van-button>
+          <van-field name="startDayLyNewspaper" label="日报：">
+            <template #right-icon>
+              <van-switch v-model="state.clockInfo.startDayLyNewspaper"/>
+            </template>
+          </van-field>
+          <van-field name="startWeekLyNewspaper" label="周报：">
+            <template #right-icon>
+              <van-switch v-model="state.clockInfo.startWeekLyNewspaper"/>
+            </template>
+          </van-field>
+          <van-field name="startMonthLyNewspaper" label="月报：">
+            <template #right-icon>
+              <van-switch v-model="state.clockInfo.startMonthLyNewspaper"/>
+            </template>
+          </van-field>
+          <div class="mx-2 mt-5">
+            <van-button plain type="primary" @click="generateAReport" block>生成报告</van-button>
+          </div>
+        </div>
+        <div v-else>
+          <van-notice-bar
+              left-icon="info-o"
+              text="生成报告预计10分钟左右，添加成功后，在打卡信息界面查看"
+          />
+          <div class="h-64 justify-center items-center flex">
+            <van-loading color="#0094ff" vertical>
+              <template #icon>
+                <van-icon name="star-o" size="30"/>
+              </template>
+              报告生成中...
+            </van-loading>
+          </div>
         </div>
         <br/>
       </van-action-sheet>
-      <van-action-sheet @cancel="reportSourceShowA = false"
-                        v-model:show="reportSourceShowA" title="报告库">
+      <van-action-sheet @cancel="showReportSourceByLibrary = false"
+                        v-model:show="showReportSourceByLibrary" title="报告库">
         <van-collapse v-model="activeNames" accordion>
           <van-field
-              v-model="state.clockInfo.jobName"
+              v-model="state.initClockInfo.jobName"
               name="weekPosition"
               label="职位"
+              :rules="[{ required: true, message: '请填写职位' }]"
               readonly
               placeholder="职位"
           />
-          <van-collapse-item v-if="state.clockInfo.startDayly" title="日报" name="1">
+          <van-collapse-item v-if="state.clockInfo.startDayLyNewspaper" title="日报" name="1">
             <van-field
                 v-model="state.dayReport.dayTitle"
                 name="dayTitle"
                 label="标题"
                 placeholder="标题"
+                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="state.dayReport.dayContent"
@@ -180,18 +231,20 @@
                 type="textarea"
                 autosize
                 rows="2"
-                maxlength="500"
+                maxlength="1200"
                 show-word-limit
                 label="内容"
                 placeholder="内容"
+                :rules="[{ required: true, message: '请填写内容' }]"
             />
           </van-collapse-item>
-          <van-collapse-item v-if="state.clockInfo.startWeekly" title="周报" name="2">
+          <van-collapse-item v-if="state.clockInfo.startWeekLyNewspaper" title="周报" name="2">
             <van-field
                 v-model="state.weekReport.weekTitle"
                 name="weekTitle"
                 label="标题"
                 placeholder="标题"
+                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="state.weekReport.weekContent"
@@ -199,18 +252,20 @@
                 type="textarea"
                 autosize
                 rows="2"
-                maxlength="500"
+                maxlength="1200"
                 show-word-limit
                 label="内容"
                 placeholder="内容"
+                :rules="[{ required: true, message: '请填写内容' }]"
             />
           </van-collapse-item>
-          <van-collapse-item v-if="state.clockInfo.startMonthly" title="月报" name="3">
+          <van-collapse-item v-if="state.clockInfo.startMonthLyNewspaper" title="月报" name="3">
             <van-field
                 v-model="state.monthReport.monthTitle"
                 name="monthTitle"
                 label="标题"
                 placeholder="标题"
+                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="state.monthReport.monthContent"
@@ -222,30 +277,34 @@
                 show-word-limit
                 label="内容"
                 placeholder="内容"
+                :rules="[{ required: true, message: '请填写内容' }]"
             />
           </van-collapse-item>
         </van-collapse>
         <div class="mx-2 mt-5">
           <van-button plain type="primary" block>确认</van-button>
         </div>
+        <br>
       </van-action-sheet>
       <van-action-sheet
-          @cancel="reportSourceShowA = false"
-          v-model:show="reportSourceShowB" title="自己填写">
+          @cancel="showReportSourceByLibrary = false"
+          v-model:show="showReportSourceByYour" title="自己填写">
         <van-collapse v-model="activeNames" accordion>
           <van-field
-              v-model="state.clockInfo.jobName"
+              v-model="state.initClockInfo.jobName"
               name="weekPosition"
               label="职位"
               readonly
               placeholder="职位"
+              :rules="[{ required: true, message: '请填写职位' }]"
           />
-          <van-collapse-item v-if="state.clockInfo.startDayly" title="日报" name="1">
+          <van-collapse-item v-if="state.clockInfo.startDayLyNewspaper" title="日报" name="1">
             <van-field
                 v-model="state.dayReport.dayTitle"
                 name="dayTitle"
                 label="标题"
                 placeholder="标题"
+                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="state.dayReport.dayContent"
@@ -253,18 +312,20 @@
                 type="textarea"
                 autosize
                 rows="2"
-                maxlength="500"
+                maxlength="1200"
                 show-word-limit
                 label="内容"
+                :rules="[{ required: true, message: '请填写内容' }]"
                 placeholder="内容"
             />
           </van-collapse-item>
-          <van-collapse-item v-if="state.clockInfo.startWeekly" title="周报" name="2">
+          <van-collapse-item v-if="state.clockInfo.startWeekLyNewspaper" title="周报" name="2">
             <van-field
                 v-model="state.weekReport.weekTitle"
                 name="weekTitle"
                 label="标题"
                 placeholder="标题"
+                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="state.weekReport.weekContent"
@@ -272,18 +333,20 @@
                 type="textarea"
                 autosize
                 rows="2"
-                maxlength="500"
+                maxlength="1200"
                 show-word-limit
                 label="内容"
                 placeholder="内容"
+                :rules="[{ required: true, message: '请填写内容' }]"
             />
           </van-collapse-item>
-          <van-collapse-item v-if="state.clockInfo.startMonthly" title="月报" name="3">
+          <van-collapse-item v-if="state.clockInfo.startMonthLyNewspaper" title="月报" name="3">
             <van-field
                 v-model="state.monthReport.monthTitle"
                 name="monthTitle"
                 label="标题"
                 placeholder="标题"
+                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="state.monthReport.monthContent"
@@ -291,8 +354,9 @@
                 type="textarea"
                 autosize
                 rows="2"
-                maxlength="500"
+                maxlength="1200"
                 show-word-limit
+                :rules="[{ required: true, message: '请填写内容' }]"
                 label="内容"
                 placeholder="内容"
             />
@@ -306,6 +370,7 @@
 
       <van-popup v-model:show="startTimeShow" position="bottom">
         <van-time-picker
+            v-model="state.defaultStartTime"
             title="上班打卡时间："
             @confirm="confirmStartTime"
             :columns-type="['hour', 'minute', 'second']"
@@ -316,7 +381,7 @@
       </van-popup>
       <van-popup v-model:show="endTimeShow" position="bottom">
         <van-time-picker
-            v-model="state.endTime"
+            v-model="state.defaultEndTime"
             title="下班打卡时间："
             @confirm="confirmEndTime"
             :columns-type="['hour', 'minute', 'second']"
@@ -325,144 +390,169 @@
             @cancel="endTimeShow = false"
         />
       </van-popup>
-      <van-action-sheet v-model:show="show" title="地图选址">
-        <van-field
-            v-model="state.clockInfo.jobAddress"
-            name="jobAddress"
-            label="公司地址"
-            placeholder="公司地址"
-        />
-        <van-field
-            v-model="state.clockInfo.clockAddress"
-            name="clockAddress"
-            label="打卡地址"
-            placeholder="省 · 市 · 区 · 在xxx附近"
-            :rules="[{ required: true, message: '请填写打卡地址' }]"
-        />
-        <BMap ref="map" height="320px" :center="point || undefined" @initd="handleInitd"
-              :mapType="mapType"
-        >
-          <BZoom :offset="{ x: 22, y: 80 }"/>
-          <BCityList :offset="{ x: 20, y: 20 }"/>
-          <BNavigation3d anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :offset="{ x: 10, y: 140 }"/>
-          <BControl anchor="BMAP_ANCHOR_TOP_RIGHT" :offset="{ x: 20, y: 20 }" class="custom-control">
-            <select class="select" name="" id="" v-model="mapType">
-              <option value="BMAP_NORMAL_MAP">普通地图</option>
-              <option value="BMAP_SATELLITE_MAP">卫星地图</option>
-              <option value="BMAP_EARTH_MAP">地球模式</option>
-            </select>
-          </BControl>
-          <BLocation :offset="{ x: 14, y: 20 }"/>
-
-          <template v-if="!isLoading && !isEmpty">
-            <BMarker :position="point"></BMarker>
-            <BLabel
-                style="color: #333; font-size: 9px"
-                :position="point"
-                :content="arvaVal?arvaVal:'12' "
-            />
-          </template>
-        </BMap>
-      </van-action-sheet>
       <div style="margin: 16px;">
         <van-button round block type="primary" native-type="submit">
           添加
         </van-button>
       </div>
     </van-form>
+    <div> {{ state.result }}</div>
     <br/>
   </div>
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from "vue";
-import {MapType, Point, useAddressGeocoder} from 'vue3-baidu-map-gl'
+import {reactive, ref, watchEffect} from "vue";
 import {closeToast, showFailToast, showLoadingToast, showSuccessToast} from "vant";
+import {useRoute, useRouter} from "vue-router";
 
 const activeNames = ref(['1']);
+const doClockInfo = ref([]);
+const getDevice = ref([]);
+const massagePush = ref([]);
+const router = useRouter();
+const route = useRoute();
 const show = ref(false);
 const startTimeShow = ref(false);
 const endTimeShow = ref(false);
-const reportSourceShowA = ref(false);
-const reportSourceShowC = ref(false);
+const showReportSourceByLibrary = ref(false);
+const showReportSourceByAi = ref(false);
+const showReportSourceByYour = ref(false);
 
-const reportSourceShowB = ref(false);
-const groupChecked = ref([]);
 const groupCheckedA = (v) => {
   console.log(v, 'v')
 }
 
 const confirmStartTime = (val) => {
-  state.startTime = val.selectedValues
+  state.defaultStartTime = val.selectedValues
   state.clockInfo.startTime = val.selectedValues.map((item) => item).join(':');
   startTimeShow.value = false
 }
 const confirmEndTime = (val) => {
-  state.endTime = val.selectedValues
+  state.defaultEndTime = val.selectedValues
   state.clockInfo.startTime = val.selectedValues.map((item) => item).join(':');
   startTimeShow.value = false
 }
+
 const state = reactive({
+  result: '',
   activeIndex: null,
-  startTime: ['08', '00', '00'],
-  endTime: ['19', '00', '00'],
+  generatingReport: false,
+  defaultStartTime: ['08', '00', '00'],
+  defaultEndTime: ['18', '00', '00'],
   loading: false,
   dayReport: {
+    id: '1',
+    type: "day",
     dayTitle: "",
     dayContent: ''
   },
   weekReport: {
+    id: '1',
+    type: "week",
     weekTitle: "",
     weekContent: ''
   },
   monthReport: {
+    id: '1',
     monthTitle: "",
+    type: "month",
     monthContent: ''
   },
-  checked: false,
-  clockInfo: {
-    clockDays: 180,
-    jobName: '',
-    reportSource: '',
-    startDayly: false,
-    startWeekly: false,
-    startMonthly: false,
-    startTime: '08:00:00',
-    endTime: '18:00:00',
-    clockDay: ['0', '1', "2", "3", "4", "5", "6"],
-    userName: '',
+  getClockInfoStatus: false,
+  initClockInfo: {
+    phone: '',
     password: '',
+    jobName: '',
     latitude: '',
     longitude: '',
     jobAddress: "",
     clockAddress: ""
+  },
+  clockInfo: {
+    pushPushToken: '',
+    email: '',
+    device: '',
+    clockDays: 180,
+    reportSource: '',
+    startDayLyNewspaper: false,
+    startWeekLyNewspaper: false,
+    startMonthLyNewspaper: false,
+    startTime: '08:00:00',
+    endTime: '18:00:00',
+    clockDay: ['0', '1', "2", "3", "4", "5", "6"],
   }
 });
 
-const doReportSourceShowA = () => {
-  if (!state.clockInfo.startDayly && !state.clockInfo.startWeekly && !state.clockInfo.startMonthly) {
+watchEffect(() => {
+  const {id} = route.query
+  if (id) {
+    const initData = {
+      phone: "qimuuuu" + id,
+      jobName: '室内设计',
+      password: "12345678",
+      latitude: '123.45',
+      longitude: '123.45',
+      jobAddress: "河南省郑州市四六区嵩山路政通路亿辰山海间3号楼1单元1309",
+      clockAddress: "河南省 · 郑州市 · 四六区 · 在山海间附近"
+    }
+
+    state.clockInfo = {
+      pushPushToken: '22sdf222222222222eas',
+      email: '3444444@qq.com',
+      device: '',
+      clockDays: 23,
+      reportSource: '1',
+      startDayLyNewspaper: true,
+      startWeekLyNewspaper: false,
+      startMonthLyNewspaper: false,
+      startTime: '08:07:00',
+      endTime: '18:45:00',
+      clockDay: ['0', "4", "5", "6"],
+    }
+    state.defaultStartTime = state.clockInfo.startTime.split(":");
+    state.defaultEndTime = state.clockInfo.endTime.split(":");
+    state.initClockInfo = initData
+  }
+});
+
+const getReportSourceByLibrary = () => {
+  if (!state.clockInfo.startDayLyNewspaper && !state.clockInfo.startWeekLyNewspaper && !state.clockInfo.startMonthLyNewspaper) {
     showFailToast("请先开启任意报告")
     return
   }
-  reportSourceShowA.value = true
+  showReportSourceByLibrary.value = true
 }
-const doReportSourceShowC = () => {
-  // if (!state.clockInfo.startDayly && !state.clockInfo.startWeekly && !state.clockInfo.startMonthly) {
+const getReportSourceByAi = () => {
+  // if (!state.clockInfo.startDayLyNewspaper && !state.clockInfo.startWeekLyNewspaper && !state.clockInfo.startMonthLyNewspaper) {
   //   showFailToast("请先开启任意报告")
   //   return
   // }
-  reportSourceShowC.value = true
+  showReportSourceByAi.value = true
 }
-const doReportSourceShowB = () => {
-  if (!state.clockInfo.startDayly && !state.clockInfo.startWeekly && !state.clockInfo.startMonthly) {
+
+const generateAReport = () => {
+  if (!state.clockInfo.startDayLyNewspaper && !state.clockInfo.startWeekLyNewspaper && !state.clockInfo.startMonthLyNewspaper) {
+    showFailToast("请先选择任意报告")
+    return
+  }
+  if (!state.initClockInfo.jobName) {
+    showFailToast("请先获取您的岗位信息")
+    showReportSourceByAi.value = false
+    return
+  }
+  state.generatingReport = true
+}
+const getReportSourceByYour = () => {
+  if (!state.clockInfo.startDayLyNewspaper && !state.clockInfo.startWeekLyNewspaper && !state.clockInfo.startMonthLyNewspaper) {
     showFailToast("请先开启任意报告")
     return
   }
-  reportSourceShowB.value = true
+  showReportSourceByYour.value = true
 }
 
 const getClockInfo = () => {
-  if (state.checked) {
+  if (state.getClockInfoStatus) {
     state.loading = true
     showLoadingToast({
       duration: 0,
@@ -483,112 +573,49 @@ const getClockInfo = () => {
     }, 1000);
 
     setTimeout(() => {
-      const lodaData = {
+      const initData = {
         clockDays: 180,
-        userName: "qimuuuu",
+        phone: "qimuuuu",
         jobName: '室内设计',
-        startDayly: false,
-        startTime: '06:07:00',
+        startWeekLyNewspaper: false,
+        startMonthLyNewspaper: false,
+        startDayLyNewspaper: false,
+        startTime: '08:07:00',
         endTime: '18:45:00',
         password: "12345678",
-        startWeekly: false,
-        startMonthly: false,
         latitude: '123.45',
         reportSource: '',
         longitude: '123.45',
-        clockDay: ['0', '1', "2", "3", "4", "5", "6"],
+        clockDay: ['0', '1', "2", "3", "4"],
         jobAddress: "河南省郑州市二七区嵩山路政通路亿辰山海间3号楼1单元1309",
         clockAddress: "河南省 · 郑州市 · 二七区 · 在亿辰山海间附近"
       }
-      state.clockInfo = lodaData
+      const getData = {
+        clockDays: 180,
+        startWeekLyNewspaper: false,
+        startMonthLyNewspaper: false,
+        startDayLyNewspaper: false,
+        startTime: '08:07:00',
+        endTime: '18:45:00',
+        latitude: '123.45',
+        reportSource: '',
+        clockDay: ['0', '1', "2", "3", "4"],
+      }
+      state.initClockInfo = initData
+      // state.clockInfo = getData
 
-      state.startTime = state.clockInfo.startTime.split(":");
-      state.endTime = state.clockInfo.endTime.split(":");
+      // state.defaultStartTime = state.clockInfo.startTime.split(":");
+      // state.defaultEndTime = state.clockInfo.endTime.split(":");
       state.loading = false
     }, 2000)
   }
 }
-const arvaVal = ref();
 
 const onSubmit = (values) => {
+  state.result = JSON.stringify(values)
   console.log(values)
-  showFailToast(JSON.stringify(values));
+  // showFailToast(JSON.stringify(values));
 };
-
-// onMounted(() => {
-//   if (!state.clockInfo.jobAddress) {
-//     return
-//   }
-//   formatAddress(state.clockInfo.jobAddress)
-// })
-
-const generateAReport = () => {
-  if (!state.clockInfo.jobName) {
-    showFailToast("请先获取您的岗位信息")
-    reportSourceShowC.value=false
-  }
-
-}
-
-const mapType = ref<MapType>('BMAP_NORMAL_MAP')
-const map = ref()
-
-const {get, point, isLoading, isEmpty} = useAddressGeocoder<Point>(() => {
-  map.value.resetCenter()
-})
-
-// watch(
-//     () => state.clockInfo.jobAddress,
-//     (n) => {
-//       if (!n) {
-//         showFailToast("公司地址不能为空");
-//         return
-//       }
-//       formatAddress(n)
-//     },
-//     {
-//       deep: true
-//     }
-// )
-
-
-const formatAddress = (val) => {
-  const reg = /^(?<province>[^市县区]+(?:省|自治区|特别行政区))(?<city>[^市县区]+市|市辖区)(?<county>[^市县区]+(?:区|县|市内区|林区|特区))?(?<address>(?:[^\\n]*))/;
-  const regExpMatchArray = val.match(reg);
-  const province = regExpMatchArray.groups.province;
-  const city = regExpMatchArray.groups.city;
-  const county = regExpMatchArray.groups.county;
-  const address = regExpMatchArray.groups.address;
-
-  let newAddress = '';
-  if (province && province.trim()) {
-    newAddress += province;
-  }
-  if (city && city.trim()) {
-    newAddress += ' · ' + city;
-  }
-  if (county && county.trim()) {
-    newAddress += ' · ' + county;
-  }
-  if (address && address.trim()) {
-    newAddress += ' · ' + address;
-  }
-  if (newAddress.trim().endsWith("·")) {
-    newAddress = newAddress.slice(0, -1);
-  }
-  state.clockInfo.clockAddress = newAddress
-  if (show.value) {
-    arvaVal.value = regExpMatchArray.input
-    get(val, regExpMatchArray.groups.city)
-  }
-}
-
-const handleInitd = () => {
-  var reg = /^(?<province>[^市县区]+(?:省|自治区|特别行政区))(?<city>[^市县区]+市|市辖区)(?<county>[^市县区]+(?:区|县|市内区|林区|特区))?(?<address>(?:[^\\n]*))/;
-  const regExpMatchArray = state.clockInfo.jobAddress.match(reg);
-  arvaVal.value = regExpMatchArray.input
-  get(state.clockInfo.jobAddress, regExpMatchArray.groups.city)
-}
 
 </script>
 
