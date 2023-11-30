@@ -16,6 +16,12 @@
         <van-collapse v-model="doClockInfo">
           <van-collapse-item title="打卡信息:" name="1">
             <van-field
+                v-model="state.initClockInfo.nikeName"
+                name="nikeName"
+                label="姓名："
+                readonly
+            />
+            <van-field
                 v-model="state.initClockInfo.jobAddress"
                 name="jobAddress"
                 label="公司地址："
@@ -53,65 +59,77 @@
                 name="latitude"
                 readonly
                 label="报告来源："
-            >AI定制化报告</van-field>
+            />
             <van-collapse v-model="activeNames" accordion>
-              <van-collapse-item title="日报" name="1">
-                <van-field
-                    v-model="state.dayReport.dayTitle"
-                    name="dayTitle"
-                    label="标题"
-                    readonly
-                />
-                <van-field
-                    v-model="state.dayReport.dayContent"
-                    name="dayContent"
-                    type="textarea"
-                    autosize
-                    rows="2"
-                    maxlength="1200"
-                    show-word-limit
-                    label="内容"
-                    readonly
-                />
-              </van-collapse-item>
-              <van-collapse-item title="周报" name="2">
-                <van-field
-                    v-model="state.weekReport.weekTitle"
-                    name="weekTitle"
-                    label="标题"
-                    readonly
-                />
-                <van-field
-                    v-model="state.weekReport.weekContent"
-                    name="weekContent"
-                    type="textarea"
-                    autosize
-                    rows="2"
-                    maxlength="1200"
-                    show-word-limit
-                    label="内容"
-                    readonly
-                />
-              </van-collapse-item>
-              <van-collapse-item title="月报" name="3">
-                <van-field
-                    v-model="state.monthReport.monthTitle"
-                    name="monthTitle"
-                    label="标题"
-                    readonly
-                />
-                <van-field
-                    v-model="state.monthReport.monthContent"
-                    name="monthContent"
-                    type="textarea"
-                    autosize
-                    rows="2"
-                    maxlength="1200"
-                    show-word-limit
-                    label="内容"
-                    readonly
-                />
-              </van-collapse-item>
+              <div v-if="state.generatingReport">
+                <van-collapse-item title="日报" v-if="state.clockInfo.startDayLyNewspaper" name="1">
+                  <van-field
+                      v-model="state.report.dayReport.dayTitle"
+                      name="dayTitle"
+                      label="标题"
+                      readonly
+                  />
+                  <van-field
+                      v-model="state.report.dayReport.dayContent"
+                      name="dayContent"
+                      type="textarea"
+                      autosize
+                      rows="2"
+                      maxlength="1200"
+                      show-word-limit
+                      label="内容"
+                      readonly
+                  />
+                </van-collapse-item>
+                <van-collapse-item title="周报" v-if="state.clockInfo.startWeekLyNewspaper" name="2">
+                  <van-field
+                      v-model="state.report.weekReport.weekTitle"
+                      name="weekTitle"
+                      label="标题"
+                      readonly
+                  />
+                  <van-field
+                      v-model="state.report.weekReport.weekContent"
+                      name="weekContent"
+                      type="textarea"
+                      autosize
+                      rows="2"
+                      maxlength="1200"
+                      show-word-limit
+                      label="内容"
+                      readonly
+                  />
+                </van-collapse-item>
+                <van-collapse-item title="月报" v-if="state.clockInfo.startMonthLyNewspaper" name="3">
+                  <van-field
+                      v-model="state.report.monthReport.monthTitle"
+                      name="monthTitle"
+                      label="标题"
+                      readonly
+                  />
+                  <van-field
+                      v-model="state.report.monthReport.monthContent"
+                      name="monthContent"
+                      type="textarea"
+                      autosize
+                      rows="2"
+                      maxlength="1200"
+                      show-word-limit
+                      label="内容"
+                      readonly
+                  />
+                </van-collapse-item>
+              </div>
+              <div v-else>
+                <div class="h-12 mt-2 justify-center items-center flex">
+                  <van-loading color="#0094ff" vertical>
+                    <template #icon>
+                      <van-icon name="star-o" size="30"/>
+                    </template>
+                    报告生成中...
+                  </van-loading>
+                </div>
+              </div>
             </van-collapse>
           </van-collapse-item>
         </van-collapse>
@@ -131,19 +149,19 @@
           <template #input>
             <van-checkbox-group v-model="state.clockInfo.clockDay" disabled @change="groupCheckedA"
                                 direction="horizontal">
-              <van-checkbox name="0" shape="square">周一</van-checkbox>
+              <van-checkbox name="2" shape="square">周一</van-checkbox>
               <br>
-              <van-checkbox name="1" shape="square">周二</van-checkbox>
+              <van-checkbox name="3" shape="square">周二</van-checkbox>
               <br>
-              <van-checkbox name="2" shape="square">周三</van-checkbox>
+              <van-checkbox name="4" shape="square">周三</van-checkbox>
               <br>
-              <van-checkbox name="3" shape="square">周四</van-checkbox>
+              <van-checkbox name="5" shape="square">周四</van-checkbox>
               <br>
-              <van-checkbox name="4" shape="square">周五</van-checkbox>
+              <van-checkbox name="6" shape="square">周五</van-checkbox>
               <br>
-              <van-checkbox name="5" shape="square">周六</van-checkbox>
+              <van-checkbox name="7" shape="square">周六</van-checkbox>
               <br>
-              <van-checkbox name="6" shape="square">周日</van-checkbox>
+              <van-checkbox name="1" shape="square">周日</van-checkbox>
             </van-checkbox-group>
           </template>
         </van-field>
@@ -171,7 +189,7 @@
                 readonly
             />
             <van-field
-                v-model="state.clockInfo.pushPushToken"
+                v-model="state.clockInfo.pushToken"
                 name="pushplusToken"
                 label="微信推送Token："
                 readonly
@@ -184,15 +202,7 @@
   <br>
   <div class="mx-2 text-s">
     <van-cell-group inset>
-      <div class="flex justify-center items-center space-x-6 ml-2 h-16">
-        <div @click="router.push(`/clockInfo/detailed/${state.initClockInfo.phone}`)">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-               stroke="currentColor" class="w-8 h-8">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-        </div>
+      <div class="flex justify-center items-center space-x-5 h-16">
         <div @click="doClock(state.clockInfo)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-8 h-8">
@@ -200,21 +210,23 @@
                   d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5"/>
           </svg>
         </div>
-        <div @click="openClock(state.clockInfo)" v-if="state.clockInfo.clockStatus!==1&&state.clockInfo.clockStatus!==2">
+        <div @click="openClock(state.clockInfo)"
+             v-if="state.clockInfo.clockStatus!==1&&state.clockInfo.clockStatus!==2">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-8 h-8">
             <path stroke-linecap="round" stroke-linejoin="round"
                   d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/>
           </svg>
         </div>
-        <div @click="stopClock(state.clockInfo)" v-if="state.clockInfo.clockStatus===1||state.clockInfo.clockStatus===2">
+        <div @click="stopClock(state.clockInfo)"
+             v-if="state.clockInfo.clockStatus===1||state.clockInfo.clockStatus===2">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-8 h-8">
             <path stroke-linecap="round" stroke-linejoin="round"
                   d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
         </div>
-        <div @click="historicalRecord(state.clockInfo.id)">
+        <div @click="historicalRecord(state.clockInfo)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-8 h-8">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -228,7 +240,7 @@
                   d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
           </svg>
         </div>
-        <div @click="deleteClock(state.clockInfo.id)">
+        <div @click="deleteClock(state.clockInfo)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-8 h-8">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -238,71 +250,97 @@
       </div>
     </van-cell-group>
   </div>
-
+  <br/>
 </template>
 
 <script setup lang="ts">
 import {useRoute, useRouter} from "vue-router";
-import {reactive, ref} from "vue";
-import {showToast} from "vant";
+import {onMounted, reactive, ref} from "vue";
+import {showConfirmDialog, showFailToast, showSuccessToast, showToast} from "vant";
+import {ClockInControllerService, ClockInInfoControllerService} from "../services/moguding-backend";
+import {useBackClockInfoStore} from "../stores/backupClockInfo";
 
+const backClockInfoStore = useBackClockInfoStore();
 const getDevice = ref([]);
 const massagePush = ref([]);
 const doClockInfo = ref([]);
 const report = ref([]);
-const doClock = (item) => {
+const doClock = async (item) => {
   item.clockStatus = 1
-  // showToast("立即打卡账号：" + item.phone)
+  const res = await ClockInControllerService.startingClockInUsingPost({id: item.id})
+  if (res.data && res.code === 0) {
+    showSuccessToast("打卡开启成功")
+  }
 }
-const openClock = (item) => {
+const openClock = async (item) => {
   item.clockStatus = 1
-  // showToast("开始打卡账号：" + item.phone)
+  const res = await ClockInControllerService.startingClockInUsingPost({id: item.id})
+  if (res.data && res.code === 0) {
+    showSuccessToast("打卡开启成功")
+  }
 }
-const stopClock = (item) => {
+const stopClock = async (item) => {
   item.clockStatus = 0
-  // showToast("暂停打卡账号：" + item.phone)
+  const res = await ClockInControllerService.stopClockInUsingPost({id: item.id})
+  if (res.data && res.code === 0) {
+    showSuccessToast("打卡暂停成功")
+  }
 }
-const historicalRecord = (id) => {
-  showToast("历史记录id：" + id)
+const historicalRecord = (item) => {
+  router.push({path: '/historicalRecord', query: {phone:item.phone}})
 }
-const deleteClock = (id) => {
-  showToast("删除记录id：" + id)
+const deleteClock = async (item) => {
+  showConfirmDialog({
+    title: '确认删除该打卡信息？',
+    message:
+        '请确认是否删除账号：' + item.phone,
+  })
+      .then(async () => {
+        const res = await ClockInInfoControllerService.deleteClockInInfoUsingPost({id: item.id})
+        if (res.data && res.code === 0) {
+          showSuccessToast("删除成功")
+          console.log(backClockInfoStore.clockList)
+          // clock.value = backClockInfoStore.clockList.filter(clock => clock.id !== item.id)
+          backClockInfoStore.clockList = backClockInfoStore.clockList.filter(clock => clock.id !== item.id)
+          backClockInfoStore.backClockInfo = backClockInfoStore.backClockInfo.filter(clock => clock.id !== item.id)
+        }
+      })
+      .catch(() => {
+        // on cancel
+      });
 }
 const updateClock = (id) => {
-  showToast("修改记录id：" + id)
   router.push({
-    path: '/moguding',
+    path: '/update',
     query: {id: id}
   })
 }
-
 
 const router = useRouter();
 const route = useRoute();
 const state = reactive({
   result: '',
   activeIndex: null,
-  generatingReport: false,
+  generatingReport: true,
   defaultStartTime: ['08', '00', '00'],
   defaultEndTime: ['18', '00', '00'],
   loading: false,
-  dayReport: {
-    id: '1',
-    type: "day",
-    dayTitle: "",
-    dayContent: ''
-  },
-  weekReport: {
-    id: '1',
-    type: "week",
-    weekTitle: "",
-    weekContent: ''
-  },
-  monthReport: {
-    id: '1',
-    monthTitle: "",
-    type: "month",
-    monthContent: ''
+  report: {
+    dayReport: {
+      type: "day",
+      dayTitle: "",
+      dayContent: ''
+    },
+    weekReport: {
+      type: "week",
+      weekTitle: "",
+      weekContent: ''
+    },
+    monthReport: {
+      monthTitle: "",
+      type: "month",
+      monthContent: ''
+    },
   },
   getClockInfoStatus: false,
   initClockInfo: {
@@ -321,7 +359,7 @@ const state = reactive({
     clockDays: 23,
     reportSource: 'AI定制化报告',
     startDayLyNewspaper: true,
-    startWeekLyNewspaper: false,
+    startWeekLyNewspaper: true,
     startMonthLyNewspaper: false,
     startTime: '08:07:00',
     endTime: '18:45:00',
@@ -329,6 +367,40 @@ const state = reactive({
   }
 });
 const activeNames = ref(['1']);
+onMounted(async () => {
+  const {id} = route.params
+  if (!id) {
+    showFailToast("打卡信息不存在")
+    return
+  }
+  const res = await ClockInInfoControllerService.getClockInInfoByIdUsingGet(id)
+  if (res.data && res.code === 0) {
+    state.initClockInfo = res.data
+    state.clockInfo = res.data
+    state.clockInfo.clockDay = JSON.parse(res.data.selectClockDay)
+    state.clockInfo.startDayLyNewspaper = res.data.dailyNewspaperStatus !== 0
+    state.clockInfo.startWeekLyNewspaper = res.data.weekNewspaperStatus !== 0
+    state.clockInfo.startMonthLyNewspaper = res.data.monthNewspaperStatus !== 0
+    if (res.data.reportSource === 1) {
+      state.clockInfo.reportSource = "AI定制化报告"
+    }
+    if (res.data.reportSource === 0) {
+      state.clockInfo.reportSource = "未开启"
+    }
+    if (res.data.reportSource === 2) {
+      state.clockInfo.reportSource = "报告库"
+    }
+    if (res.data.reportSource === 3) {
+      state.clockInfo.reportSource = "自己填写"
+    }
+    state.generatingReport = res.data.aiReportStatus === 2 || res.data.aiReportStatus === 0
+    state.report = res.data.report
+
+  } else {
+    showFailToast("打卡信息不存在")
+   await router.push('/clockInfo?clockType=gxy&tagType=all')
+  }
+})
 
 </script>
 

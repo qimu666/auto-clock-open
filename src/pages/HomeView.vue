@@ -1,9 +1,10 @@
 <template>
   <div class="mt-2 ">
     <van-search v-model="value" placeholder="请输入搜索关键词"/>
+    <div v-if="data.shopData.length>0">
     <div class="grid grid-cols-2 mt-3 sm:grid-cols-4 lg:grid-cols-3 gap-3">
       <div v-for="item in data.shopData" class="bg-white h-40 rounded" @click="clickTabBar(item.id)">
-        <div @click="router.push(`${item.url}`)">
+        <div @click="goToUrl(item)">
           <div class="flex justify-center items-center mt-4">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor"
@@ -14,16 +15,18 @@
             </svg>
           </div>
           <p class="flex justify-center items-center mt-1 text-sm">
-            {{ item.shopName }}
+            {{ item.name }}
           </p>
           <div class="flex justify-center items-center mt-1 text-sm">
-            <span class="text-red-500">{{ item.amount }}</span> 积分&nbsp;/&nbsp;
-            <p v-if="item.type==='day'">天</p>
+            <span class="text-red-500">{{ item.coin }}</span> 积分&nbsp;/&nbsp;
+            <p v-if="item.timeType==='secondary'">次</p>
+            <p v-else-if="item.timeType==='day'">天</p>
             <p v-else>打卡结束</p>
           </div>
         </div>
       </div>
     </div>
+    </div><van-empty v-else description="暂无数据"/>
     <br/>
     <br/>
     <br/>
@@ -31,8 +34,9 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
+import {PlatformInfoControllerService} from "../services/moguding-backend";
 
 const router = useRouter();
 const clickTabBar = (index: any) => {
@@ -41,30 +45,23 @@ const clickTabBar = (index: any) => {
 
 const data = reactive({
   activeIndex: null,
-  shopData: [
-    {
-      id: '2',
-      shopName: '学工云',
-      type: 'day',
-      amount: 200,
-      url: '/moguding'
-    },
-    {
-      id: '1',
-      shopName: '职校家园',
-      amount: 100,
-      type: 'day',
-      url: 'http://110.42.237.99/'
-    },
-    {
-      id: '3',
-      shopName: '职校家园',
-      amount: 2000,
-      type: 'permanent',
-      url: 'http://110.42.237.99/'
-    },
-  ]
+  shopData: [],
 })
+
+onMounted(async () => {
+  const res = await PlatformInfoControllerService.listPlatformInfoByPageUsingPost({})
+  if (res.data && res.code === 0) {
+    data.shopData = res.data.records || []
+  }
+})
+
+const goToUrl = (item) => {
+  if (item.clockType !== 'gxy') {
+    location.href = item.url
+    return
+  }
+  router.push({path: item.url, query: {id: item.id}})
+}
 const value = ref('');
 </script>
 

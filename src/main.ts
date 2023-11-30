@@ -7,10 +7,14 @@ import Vant from 'vant'
 import 'vant/lib/index.css';
 import 'vant/es/toast/style';
 import 'vant/es/notify/style'
-import { createPinia } from 'pinia'
+import '../src/plugins/myAxios'
+import {createPinia} from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 const app = createApp(App);
 app.use(Vant)
-app.use(createPinia())
+app.use(pinia)
 app.use(router);
 app.mount('#app')

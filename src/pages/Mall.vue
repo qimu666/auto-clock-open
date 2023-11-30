@@ -1,18 +1,6 @@
 <template>
   <div class="mt-2">
-    <!--    <van-button @click="add(1)">增加1</van-button>-->
-    <!--    <van-button @click="notAdd(1)">减少1</van-button>-->
-    <!--    <van-button @click="add(10)">增加10</van-button>-->
-    <!--    <van-button @click="notAdd(10)">减少10</van-button>-->
-    <!--    <br>-->
-    <!--    <br>-->
-    <!--    <div style="width: 300px;">-->
-    <!--    <van-progress-->
-    <!--        :percentage="progressVal <0 ?0:progressVal"-->
-    <!--        :pivot-text="text"-->
-    <!--        layer-color="#ebedf0"-->
-    <!--    />-->
-    <!--    </div>-->
+    <div v-if="state.coinData.length>0" >
     <div class="grid grid-cols-2 mt-3 sm:grid-cols-4 lg:grid-cols-3 gap-3">
       <div v-for="item in state.coinData" @click="clickTabBar(item)"
            class="h-40 rounded bg-white">
@@ -32,84 +20,62 @@
           ￥{{ item.amount / 100 }}
         </p>
       </div>
+      </div>
+    </div>
+    <div v-else>
+    <van-empty description="暂无数据" />
     </div>
     <br/>
     <van-submit-bar
         tip-icon="info-o"
         tip="本商品为虚拟内容,用于平台运转费用,购买后不支持退换。"
-        :price="price" button-text="提交订单" @submit="onSubmit"/>
+        :price="state.price" button-text="提交订单" @submit="onSubmit"/>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, reactive, ref} from "vue";
-import {showToast} from "vant";
+import {onMounted, reactive, ref} from "vue";
+import {showConfirmDialog, showToast} from "vant";
 import {useUserStore} from '../stores/user'
-
-const progressVal = ref(0);
-const residual = ref(2);
-const countDay = ref(100);
-const text = computed(() => "剩余" + residual.value < 0 ? 0 : residual.value + "天");
-const add = (val: number) => {
-  if (residual.value + val > countDay.value) {
-    showToast("最多100天")
-    return
-  }
-  progressVal.value += val;
-  residual.value += val;
-}
-const notAdd = (val: number) => {
-  if (residual.value <= val) {
-    showToast("天数不能低于0")
-    return
-  }
-  progressVal.value -= val;
-  residual.value -= val;
-}
-progressVal.value = Number(((residual.value / countDay.value) * 100).toFixed(2))
-const price = ref(0);
-
+import {ProductInfoControllerService} from "../services/moguding-backend";
+import {useDialogStore} from "../stores/dialogRead";
+const dialogStore = useDialogStore();
 const state = reactive({
+  price:0,
   addCoin: 0,
   activeIndex: null,
-  coinData: [
-    {
-      id: '1',
-      coinName: "增加100积分",
-      addCoin: 100,
-      amount: 100
-    }, {
-      id: '2',
-      coinName: "增加300积分",
-      addCoin: 300,
-      amount: 300
-    }, {
-      id: '3',
-      coinName: "增加600积分",
-      addCoin: 600,
-      amount: 600
-    }
-  ]
-
+  coinData: []
 });
 
 const clickTabBar = (item) => {
-  price.value = item.amount
+  state.price = Number(item.amount)
   state.activeIndex = item.id;
   state.addCoin = item.addCoin
 };
 
-computed(() => {
-  return
-});
+onMounted(async ()=>{
+  const res=await ProductInfoControllerService.listProductInfoByPageUsingPost({})
+  if (res.data&&res.code===0){
+    state.coinData=res.data.records||[]
+  }
+})
+
 const user = useUserStore()
 const onSubmit = () => {
-  if (price.value <= 0 && !state.activeIndex) {
-    showToast("请先选择积分规格")
-    return
-  }
-  showToast("共" + price.value / 100 + "元")
-  user.coin += state.addCoin
+  // if (price.value <= 0 && !state.activeIndex) {
+  //   showToast("请先选择积分规格")
+  //   return
+  // }
+  showConfirmDialog({
+    message:
+    dialogStore.basicInformations.pointsNotification,
+  })
+      .then(() => {
+
+      })
+      .catch(() => {
+
+      });
 };
 </script>
 

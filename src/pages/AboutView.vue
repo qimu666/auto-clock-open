@@ -10,22 +10,25 @@
           src="/logo.gif"
       />
     </div>
-    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">{{ user.userName }}</van-divider>
+    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">{{
+        loginUser.userAccount
+      }}
+    </van-divider>
     <van-cell-group>
-      <van-cell is-link @click="router.push('/userCenter')">
+      <van-cell :value="loginUser.userAccount">
         <template #title>
           <div class="flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="w-5 h-5 stroke-1">
               <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"/>
+                    d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
             </svg>
 
-            <span class="custom-title">&nbsp;个人中心</span>
+            <span class="custom-title">&nbsp;我的账号</span>
           </div>
         </template>
       </van-cell>
-      <van-cell :value="user.coin">
+      <van-cell :value="loginUser.coin">
         <!-- 使用 title 插槽来自定义标题 -->
         <template #title>
           <div class="flex items-center">
@@ -38,32 +41,31 @@
           </div>
         </template>
       </van-cell>
-      <van-cell is-link @click="router.push('/clockInfo')">
+      <van-cell @click="router.push('/coin_detail')" is-link>
         <template #title>
           <div class="flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="w-5 h-5 stroke-1">
               <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/>
             </svg>
-
-            <span class="custom-title">&nbsp;打卡信息</span>
+            <span class="custom-title">&nbsp;积分明细</span>
           </div>
         </template>
       </van-cell>
-      <van-cell is-link>
+      <van-cell v-if="loginUser.userRole==='admin'" @click="router.push('/coinChange')" is-link>
         <template #title>
           <div class="flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="w-5 h-5 stroke-1">
               <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M7.875 14.25l1.214 1.942a2.25 2.25 0 001.908 1.058h2.006c.776 0 1.497-.4 1.908-1.058l1.214-1.942M2.41 9h4.636a2.25 2.25 0 011.872 1.002l.164.246a2.25 2.25 0 001.872 1.002h2.092a2.25 2.25 0 001.872-1.002l.164-.246A2.25 2.25 0 0116.954 9h4.636M2.41 9a2.25 2.25 0 00-.16.832V12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 12V9.832c0-.287-.055-.57-.16-.832M2.41 9a2.25 2.25 0 01.382-.632l3.285-3.832a2.25 2.25 0 011.708-.786h8.43c.657 0 1.281.287 1.709.786l3.284 3.832c.163.19.291.404.382.632M4.5 20.25h15A2.25 2.25 0 0021.75 18v-2.625c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125V18a2.25 2.25 0 002.25 2.25z"/>
+                    d="M9 7.5l3 4.5m0 0l3-4.5M12 12v5.25M15 12H9m6 3H9m12-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            <span class="custom-title">&nbsp;报告库</span>
+            <span class="custom-title">&nbsp;积分变更</span>
           </div>
         </template>
       </van-cell>
-      <van-cell is-link>
+      <van-cell is-link v-if="loginUser.userRole==='admin'" @click="router.push('/system')">
         <template #title>
           <div class="flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -78,7 +80,7 @@
       </van-cell>
     </van-cell-group>
     <div class="mt-2">
-      <van-button block @click="router.push('/login')">退出登录</van-button>
+      <van-button block @click="logout">退出登录</van-button>
     </div>
   </div>
   <br>
@@ -87,9 +89,21 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import {useUserStore} from '../stores/user'
+import {UserControllerService} from "../services/moguding-backend";
+import {onMounted} from "vue";
 
 const router = useRouter();
-const user = useUserStore()
+const userStore = useUserStore()
+const {loginUser} = userStore
+const logout = async () => {
+  await UserControllerService.userLogoutUsingPost()
+  await router.push('/login')
+}
+onMounted(() => {
+  console.log(loginUser)
+  console.log(loginUser.userName)
+  console.log(loginUser.userRole)
+})
 </script>
 
 <style scoped></style>

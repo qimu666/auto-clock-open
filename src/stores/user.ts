@@ -1,44 +1,50 @@
 // @ts-check
 import {acceptHMRUpdate, defineStore} from 'pinia'
-
-/**
- * Simulate a login
- */
-function apiLogin(a: string, p: string) {
-    if (a === 'ed' && p === 'ed') return Promise.resolve({isAdmin: true})
-    if (p === 'ed') return Promise.resolve({isAdmin: false})
-    return Promise.reject(new Error('invalid credentials'))
-}
+import {UserControllerService, UserVO} from "../services/moguding-backend";
 
 export const useUserStore = defineStore({
     id: 'user',
-    state: () => ({
-        coin: 10,
-        userName: '柒木',
-        isAdmin: true,
+    state: (): { loginUser: UserVO } => ({
+        loginUser: {userName: null,}
     }),
 
     actions: {
-        logout() {
-            this.$patch({
-                name: '',
-                isAdmin: false,
-
-            })
-
-            // we could do other stuff like redirecting the user
-        },
-
         /**
          * Attempt to login a user
          */
-        async login(user: string, password: string) {
-            const userData = await apiLogin(user, password)
-
-            this.$patch({
-                name: user,
-                ...userData,
-            })
+        async login(userAccount: string, password: string) {
+            const res = await UserControllerService.userLoginUsingPost(
+                {userPassword: password, userAccount: userAccount}
+            )
+            if (res && res.code === 0) {
+                this.$patch({
+                    loginUser: {
+                        ...res.data,
+                    }
+                })
+            } else {
+                this.$patch({
+                    loginUser: {userRole: "notLogin"}
+                })
+            }
+            return res
+        },
+        async getLoginUser() {
+            const res = await UserControllerService.getLoginUserUsingGet();
+            if (res && res.code === 0) {
+                this.$patch({
+                    loginUser: {
+                        ...res.data,
+                    }
+                })
+            } else {
+                this.$patch({
+                    loginUser: {
+                        userRole: "notLogin"
+                    }
+                })
+            }
+            return res
         },
     },
 })

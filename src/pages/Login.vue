@@ -2,19 +2,20 @@
   <div style="height: 100%">
     <div>
       <br> <br> <br> <br><br>
-      <!--      <div class="flex justify-center items-center mt-2">-->
-      <!--        <van-image-->
-      <!--            round-->
-      <!--            width="6rem"-->
-      <!--            height="6rem"-->
-      <!--            src="/logo.jpg"-->
-      <!--        />-->
-      <!--      </div>-->
-      <div class="flex justify-center items-center mt-2 text-3xl text-center font-sans font-bold">
+            <div class="flex justify-center items-center mt-2">
+              <van-image
+                  class="border border-white"
+                  round
+                  width="6rem"
+                  height="6rem"
+                  src="/logo.gif"
+              />
+            </div>
+      <div class="flex justify-center items-center mt-3 text-3xl text-center font-sans font-bold">
         自动打卡
       </div>
       <div class="mt-5">
-        <van-form @submit="onSubmit">
+        <van-form>
           <van-cell-group inset>
             <van-field
                 v-model="data.loginData.userAccount"
@@ -33,11 +34,11 @@
             />
           </van-cell-group>
           <div class="mt-4 mx-4">
-            <van-button plain block @click="login" round type="primary" native-type="submit">
+            <van-button plain block @click="login" round type="primary">
               登录
             </van-button>
-            <router-link to="/register" class="text-gray-400 text-sm float-right mt-2"> 还没有账号？点击注册
-            </router-link>
+            <span @click="router.push('/register')" class="text-gray-400 text-sm float-right mt-2"> 还没有账号？点击注册
+            </span>
           </div>
         </van-form>
       </div>
@@ -55,23 +56,28 @@
 import {reactive} from "vue";
 import {useRouter} from "vue-router";
 import {showSuccessToast} from "vant";
+import {useUserStore} from "../stores/user";
 
+const userStore = useUserStore();
 const router = useRouter()
 const data = reactive({
   loginData: {
     userAccount: '',
-    userName: '',
     password: ""
   }
 })
 
-const login = () => {
-  showSuccessToast("欢迎回来")
-  router.push("/")
+const login = async () => {
+  const res = await userStore.login(data.loginData.userAccount, data.loginData.password);
+  if (res.data && res.code === 0) {
+    showSuccessToast("欢迎回来")
+    await router.push("/")
+  }
 }
 const onSubmit = (values) => {
-  console.log('submit', values);
-};</script>
+
+};
+</script>
 
 <style>
 </style>

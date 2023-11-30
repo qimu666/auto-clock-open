@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: "/clockInfo",
-        name: "打卡信息",
+        name: "信息中台",
         component: () => import("../pages/ClockInfo.vue"),
     },
     {
@@ -35,6 +35,56 @@ const routes: Array<RouteRecordRaw> = [
         path: "/moguding",
         name: "工学云",
         component: () => import("../pages/MoGuDing.vue"),
+    },
+    {
+        path: "/update",
+        name: "修改信息",
+        component: () => import("../pages/UpdateMoGuDing.vue"),
+    },
+    {
+        path: "/system",
+        name: "系统管理",
+        component: () => import("../pages/System.vue"),
+    },
+    {
+        path: "/coinChange",
+        name: "积分变更",
+        component: () => import("../pages/CoinChange.vue"),
+    },
+    {
+        path: "/mall_management",
+        name: "商城管理",
+        component: () => import("../pages/MallManagement.vue"),
+    },
+    {
+        path: "/platform_management",
+        name: "平台管理",
+        component: () => import("../pages/PlatformManagement.vue"),
+    },
+    {
+        path: "/add_platform",
+        name: "添加平台",
+        component: () => import("../pages/AddPlatform.vue"),
+    },
+    {
+        path: "/historicalRecord",
+        name: "历史记录",
+        component: () => import("../pages/HistoricalRecord.vue"),
+    },
+    {
+        path: "/coin_detail",
+        name: "积分明细",
+        component: () => import("../pages/CoinDetail.vue"),
+    },
+    {
+        path: "/update_platform",
+        name: "更新平台",
+        component: () => import("../pages/UpdatePlatform.vue"),
+    },
+    {
+        path: "/mall_update",
+        name: "修改积分规格",
+        component: () => import("../pages/UpdateMall.vue"),
     },
     {
         path: "/notice",
