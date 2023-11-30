@@ -99,11 +99,7 @@ const logout = async () => {
   await UserControllerService.userLogoutUsingPost()
   await router.push('/login')
 }
-onMounted(() => {
-  console.log(loginUser)
-  console.log(loginUser.userName)
-  console.log(loginUser.userRole)
-})
+
 </script>
 
 <style scoped></style>

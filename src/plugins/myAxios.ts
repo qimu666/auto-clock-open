@@ -20,7 +20,6 @@ axios.interceptors.response.use(
     function (response) {
         const {data} = response
         const {code} = data;
-        console.log(data.data,'response')
         if (data && code === 0) {
             return response;
         } else {

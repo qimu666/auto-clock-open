@@ -14,7 +14,8 @@
             v-else
             :title="title"
         />
-        <van-notice-bar v-if="route.path!=='/mall_management'" scrollable :text="dialogStore.basicInformations.noticeBar" mode="closeable"/>
+        <van-notice-bar v-if="route.path!=='/mall_management' && dialogStore.basicInformations.noticeBar" scrollable
+                        :text="dialogStore.basicInformations.noticeBar" mode="closeable"/>
         <van-notice-bar v-else scrollable text="左划可编辑" mode="closeable"/>
       </div>
       <van-loading v-if="b" class="flex h-screen justify-center items-center" color="#0094ff" vertical>加载中...
@@ -74,7 +75,7 @@ const dialogStore = useDialogStore();
 const WHITE_LIST = ['/login', '/register']
 
 const route = useRoute();
-const basicInformation=ref({})
+const basicInformation = ref({})
 
 const showA = () => {
   showDialog({
@@ -90,7 +91,7 @@ const b = ref(false)
 const active = ref(0);
 const router = useRouter();
 router.beforeEach(async (to, from, next) => {
-  if (!WHITE_LIST.includes(to.path)){
+  if (!WHITE_LIST.includes(to.path)) {
     await getLoginUser()
   }
   // @ts-ignore
@@ -105,10 +106,10 @@ const onClickLeft = () => {
   return history.back()
 };
 onMounted(async () => {
-const res=await BasicInformationControllerService.getBasicInformationByIdUsingGet(1)
-  if (res.code===0&&res.data){
-    basicInformation.value=res.data
-    dialogStore.basicInformations=res.data
+  const res = await BasicInformationControllerService.getBasicInformationByIdUsingGet(1)
+  if (res.code === 0 && res.data) {
+    basicInformation.value = res.data
+    dialogStore.basicInformations = res.data
     if (!dialogStore.isRead) {
       showConfirmDialog({
         title: res.data.announcementTitle,

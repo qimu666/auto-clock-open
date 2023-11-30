@@ -87,6 +87,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../pages/UpdateMall.vue"),
     },
     {
+        path: "/add_mall",
+        name: "修改积分规格",
+        component: () => import("../pages/AddMall.vue"),
+    },
+    {
         path: "/notice",
         name: "消息通知",
         component: () => import("../pages/Notice.vue"),

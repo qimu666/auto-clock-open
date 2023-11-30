@@ -10,8 +10,7 @@
     >
 
       <van-cell-group inset>
-          <van-cell v-for="item in data.record"
-                    :title="foramDate(item.createTime)+'  '+item.description+' - '+item.coinNum"/>
+        <van-cell v-for="item in data.record" :title="getTitle(item)"/>
       </van-cell-group>
     </van-list>
   </div>
@@ -44,6 +43,17 @@ const foramDate = (val) => {
   const seconds = ("0" + date.getSeconds()).slice(-2);
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
+}
+const getTitle = (item) => {
+  if (item.type !== 'reduceCoin' && item.type !== 'recharge') {
+    return foramDate(item.createTime) + '  ' + item.nikeName + ' ' + item.description + ' - ' + item.coinNum
+  } else {
+    if (item.type === 'reduceCoin') {
+      return foramDate(item.createTime) + '  ' + item.description + ' - ' + item.coinNum
+    } else {
+      return foramDate(item.createTime) + '  ' + item.description + ' + ' + item.coinNum
+    }
+  }
 }
 
 interface stats {

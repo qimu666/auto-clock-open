@@ -15,7 +15,7 @@
       </van-swipe-cell>
       <div class="h-2"/>
     </div>
-    <van-button block @click="addMall">新增积分规格</van-button>
+    <van-button block @click="addMall">新增平台</van-button>
   </div>
 
 </template>

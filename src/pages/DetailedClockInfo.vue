@@ -299,8 +299,6 @@ const deleteClock = async (item) => {
         const res = await ClockInInfoControllerService.deleteClockInInfoUsingPost({id: item.id})
         if (res.data && res.code === 0) {
           showSuccessToast("删除成功")
-          console.log(backClockInfoStore.clockList)
-          // clock.value = backClockInfoStore.clockList.filter(clock => clock.id !== item.id)
           backClockInfoStore.clockList = backClockInfoStore.clockList.filter(clock => clock.id !== item.id)
           backClockInfoStore.backClockInfo = backClockInfoStore.backClockInfo.filter(clock => clock.id !== item.id)
         }

@@ -270,6 +270,8 @@ import {
 import {showConfirmDialog, showSuccessToast} from "vant";
 
 const data = reactive({
+  clockTotal: 0,
+  reportTotal: 0,
   initClockPageNum: 1,
   initReportNum: 1,
   tagActiveType: 'all',
@@ -374,7 +376,6 @@ const loadDataOld = async (params: any) => {
       ...params,
       searchText: params.text,
     };
-    console.log(clockQuery, "clockQuery")
     const clockStatus = clockInfoEnumStatus[clockQuery.tagType];
     const res = await ClockInInfoControllerService.listClockInInfoByPageUsingPost({
       ...clockQuery,
@@ -383,12 +384,13 @@ const loadDataOld = async (params: any) => {
     if (res.data && res.code) {
       data.clockList = res.data?.records || []
       data.backupData = res.data?.records || []
+      data.clockTotal = res.data.total
     }
   }
 };
 
 const onCancel = () => {
-  searchText.value=''
+  searchText.value = ''
 }
 watchEffect(async () => {
   let {text, clockType, tagType} = route.query
@@ -459,7 +461,6 @@ const selectClockType = (val) => {
   });
   selectDefaultTagType(val)
   data.clockList = data.backupData.filter(clock => clock.type === data.clockTypeActiveIndex)
-
 }
 
 const onSearch = async (val) => {
@@ -509,13 +510,13 @@ const onLoad = async () => {
     current: data.initClockPageNum,
     clockStatus: clockStatus
   })
-  console.log(res.data.records.length)
   if (res.code === 0) {
     if (res.data.records.length <= 0) {
       clockFinished.value = true;
     } else {
       data.clockList.push(...res.data.records)
       data.backupData.push(...res.data.records)
+      data.clockTotal = res.data.total
       data.initClockPageNum += 1;
     }
   }
@@ -533,6 +534,7 @@ const reportLoad = async () => {
     } else {
       data.reportList.push(...res.data?.records)
       data.reportBackupList.push(...res.data?.records)
+      data.reportTotal = res.data.total
       data.initReportNum += 1
     }
   }

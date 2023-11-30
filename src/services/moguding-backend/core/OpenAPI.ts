@@ -20,7 +20,7 @@ export type OpenAPIConfig = {
 };
 
 export const OpenAPI: OpenAPIConfig = {
-    BASE: process.env.NODE_ENV === "development" ? 'http://localhost:8080/api' : 'https://qimuu.icu/api',
+    BASE: process.env.NODE_ENV === "development" ? 'http://localhost:7529' : 'http://110.42.237.99:9806',
     VERSION: '1.0',
     WITH_CREDENTIALS: true,
     CREDENTIALS: 'include',

@@ -6,6 +6,7 @@
             v-model="data.basicInformations.noticeBar"
             name="滚动通知"
             label="滚动通知"
+            placeholder="请填写滚动通知内容"
             :rules="[{ required: true, message: '请填写滚动通知内容' }]"
         />
         <van-field

@@ -352,7 +352,6 @@ const groupCheckedA = (val) => {
 }
 
 const selectReportType = (v) => {
-  console.log("v", v)
 }
 
 const data = reactive({
@@ -531,7 +530,6 @@ const onSubmit = async (values) => {
     return
   }
   if (data.defaultClockInfo.startMonthLyNewspaper || data.defaultClockInfo.startWeekLyNewspaper || data.defaultClockInfo.startDayLyNewspaper) {
-    console.log(data.defaultClockInfo.reportSource)
     if (data.defaultClockInfo.reportSource === 0) {
       showFailToast("开启报告后，请选择报告来源")
       return
