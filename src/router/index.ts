@@ -67,11 +67,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../pages/AddPlatform.vue"),
     },
     {
-        path: "/historicalRecord",
-        name: "历史记录",
-        component: () => import("../pages/HistoricalRecord.vue"),
-    },
-    {
         path: "/coin_detail",
         name: "积分明细",
         component: () => import("../pages/CoinDetail.vue"),

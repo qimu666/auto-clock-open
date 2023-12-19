@@ -56,11 +56,13 @@
         <div class="h-3"></div>
       </div>
     </van-cell-group>
-    <p v-if="data.clockTypeActiveIndex!=='report'" class="mt-2 text-sm text-gray-400">共{{
-        data.clockList.length
-      }}条</p>
-    <p v-else class="mt-2 text-sm text-gray-400">共{{ data.reportList.length }}条</p>
-    <div v-if="data.clockTypeActiveIndex!=='report'">
+    <p v-if="data.clockTypeActiveIndex!=='report'" class="mt-2 text-sm text-gray-400">
+      共{{ data.clockTotal }}条 已获取{{ data.clockList.length }}条&nbsp;
+    </p>
+    <p v-else class="mt-2 text-sm text-gray-400">
+      共{{ data.reportTotal }}条 已获取{{ data.reportList.length }}条&nbsp;
+    </p>
+    <div class="h-[800px] overflow-auto" v-if="data.clockTypeActiveIndex!=='report'">
       <van-list
           class="min-h-[400px]"
           v-model:loading="clockLoding"
@@ -72,8 +74,8 @@
         <div v-for="item in data.clockList">
           <div class="bg-white rounded">
             <div class="h-2"></div>
-            <div class="mx-4 text-sm grid grid-cols-2 mt-3 lg:grid-cols-4 gap-1">
-              <div>
+            <div class="mx-4 text-sm">
+              <div class="space-y-1">
                 <div>
                   <label>账号：</label>
                   <span @click="router.push(`/clockInfo/detailed/${item.id}`)" class="text-blue-400">{{
@@ -84,19 +86,10 @@
                   <label>密码：</label>
                   <span class="">{{ item.password }}</span>
                 </div>
-              </div>
-              <div>
                 <div>
                   <label>姓名：</label>
-                  <span>{{ item.nikeName }}</span>
+                  <span class="">{{ item.nikeName }}</span>
                 </div>
-                <div>
-                  <label>消息推送：</label>
-                  <van-tag v-if="!item.pushToken&&!item.email" plain>未开启</van-tag>
-                  <van-tag v-else type="success">已开启</van-tag>
-                </div>
-              </div>
-              <div>
                 <div>
                   <label>最近状态：</label>
                   <van-tag v-if="item.clockStatus===0" plain>未开启</van-tag>
@@ -106,20 +99,36 @@
                   </van-tag>
                 </div>
                 <div>
+                  <label>消息推送：</label>
+                  <van-tag v-if="!item.pushToken&&!item.email" plain>未开启</van-tag>
+                  <van-tag v-else type="success">已开启</van-tag>
+                </div>
+                <div>
+                  <label>经纬度：</label>
+                  <span class="">{{ getLatitudeAndLongitude(item) }}</span>
+                </div>
+                <div>
+                  <label>公司地址：</label>
+                  <span class="">{{ item.jobAddress }}</span>
+                </div>
+                <div>
+                  <label>打卡地址：</label>
+                  <span class="">{{ item.clockAddress }}</span>
+                </div>
+                <div>
                   <label>日报状态：</label>
                   <van-tag v-if="item.dailyNewspaperStatus===0" plain>未开启</van-tag>
                   <van-tag v-else :type="reportEnumStatus[item.dailyNewspaperStatus]">
                     {{ reportEnumStatusMessage[item.dailyNewspaperStatus] }}
                   </van-tag>
                 </div>
-              </div>
-              <div>
                 <div>
                   <label>周报状态：</label>
                   <van-tag v-if="item.weekNewspaperStatus===0" plain>未开启</van-tag>
                   <van-tag v-else :type="reportEnumStatus[item.weekNewspaperStatus]">
                     {{ reportEnumStatusMessage[item.weekNewspaperStatus] }}
                   </van-tag>
+                  &nbsp;每周日提交
                 </div>
                 <div>
                   <label>月报状态：</label>
@@ -128,33 +137,52 @@
                       reportEnumStatusMessage[item.monthNewspaperStatus]
                     }}
                   </van-tag>
+                  &nbsp;每月最后一天提交
+                </div>
+                <div>
+                  <label>上班打卡时间：</label>
+                  <span class="">{{ item.startTime }}</span>
+                </div>
+                <div>
+                  <label>下班打卡时间：</label>
+                  <span class="">{{ item.endTime }}</span>
+                </div>
+                <div>
+                  <label>打卡周期：</label>
+                  <span class="">{{ getSignInCycle(item) }}</span>
+                </div>
+                <div>
+                  <label>剩余天数：</label>
+                  <span class="">{{ item.clockDays }}天</span>
+                </div>
+                <div>
+                  <label>最后一次打卡状态：</label>
+                  <span class="">{{ clockEnumStatusMessage[item.clockStatus] }}</span>
+                </div>
+                <div>
+                  <label>最后一次日报填写状态：</label>
+                  <span class="">
+                    {{ reportEnumStatusMessage[item.dailyNewspaperStatus] }}
+                  </span>
+                </div>
+                <div>
+                  <label>最后一次周报填写状态：</label>
+                  <span class="">
+                    {{ reportEnumStatusMessage[item.weekNewspaperStatus] }}
+                  </span>
+                </div>
+                <div>
+                  <label>最后一次日报填写状态：</label>
+                  <span class="">
+                    {{ reportEnumStatusMessage[item.monthNewspaperStatus] }}
+                  </span>
+                </div>
+                <div>
+                  <label>创建时间：</label>
+                  <span class="">{{ foramDate(item.createTime) }}</span>
                 </div>
               </div>
-              <div class="col-span-2">
-                <div class="flex">
-                  <label>今日已打卡：{{ item.startClock + item.endClock }} /
-                    2
-                    &nbsp; </label>
-                  <span>
-                <van-progress
-                    class="w-[200px] mt-2 mb-2"
-                    :percentage="getDayClockProgressValue(item)"
-                    :pivot-text="getshowDayClockClockedSuccessDays(item)"
-                    layer-color="#ebedf0"
-                /></span>
-                </div>
-                <div class="flex">
-                  <label>本周已打卡：{{ item.clockedSuccessDays }} / {{
-                      JSON.parse(item.selectClockDay).length
-                    }}&nbsp; </label>
-                  <span>
-                <van-progress
-                    class="w-[200px] mt-2 mb-2"
-                    :percentage="getProgressValue(item)"
-                    :pivot-text="getshowClockedSuccessDays(item)"
-                    layer-color="#ebedf0"
-                /></span>
-                </div>
+              <div>
                 <div class="mt-2">
                   <div class="flex justify-start items-center space-x-6 ml-2">
                     <div @click="router.push(`/clockInfo/detailed/${item.id}`)">
@@ -216,8 +244,9 @@
           <div class="h-3"/>
         </div>
       </van-list>
+      <van-back-top bottom="10vh"/>
     </div>
-    <div v-else>
+    <div class="h-[800px] overflow-auto" v-else>
       <van-list
           class="min-h-[400px]"
           v-model:loading="reportLoding"
@@ -255,8 +284,38 @@
           <div class="h-3"/>
         </div>
       </van-list>
+      <van-back-top bottom="10vh"/>
     </div>
   </div>
+  <van-dialog v-model:show="show" :title="'账号：'+data.phoneData+' 日志'">
+    <div class="h-96 overflow-auto">
+      <div class="h-1"></div>
+      <van-list
+          class="min-h-[400px]"
+          v-model:loading="historicalRecordLoading"
+          :finished="historicalRecordFinished"
+          finished-text="没有更多了"
+          error-text="请求失败，点击重新加载"
+          @load="historicalListOnLoad"
+      >
+        <!--      <div class="mt-2 bg-white flex items-center justify-center text-l h-10">账号：{{ phoneData }}</div>-->
+        <!--      <div class="h-2"></div>-->
+        <!--      <div class="mt-2" :class="bgColor(item)" v-for="item in data.record">-->
+        <!--        <div class="h-2"></div>-->
+        <!--        <div class="mx-2">-->
+        <!--          <p class="flex items-center justify-center">{{ foramDate(item.createTime) }}</p>-->
+        <!--          <p class="flex items-center justify-center">{{ item.description }}</p>-->
+        <!--        </div>-->
+        <!--        <div class="h-2"></div>-->
+        <!--      </div>-->
+        <van-cell-group>
+          <van-cell :class="bgColor(item)" v-for="item in data.historicalList"
+                    :title="foramDate(item.createTime) +' ' +item.description"/>
+        </van-cell-group>
+      </van-list>
+    </div>
+  </van-dialog>
+
 </template>
 
 <script setup lang="ts">
@@ -265,17 +324,37 @@ import {useRoute, useRouter} from "vue-router";
 import {
   ClockInControllerService,
   ClockInInfoControllerService,
-  ClockReportControllerService
+  ClockReportControllerService,
+  DailyCheckInControllerService
 } from "../services/moguding-backend";
 import {showConfirmDialog, showSuccessToast} from "vant";
 
+const show = ref(false);
+
+const historicalRecordFinished = ref(false)
+const historicalRecordLoading = ref(false)
+const bgColor = (item) => {
+  if (item.status === 2) {
+    return 'bg-green-100'
+  }
+  if (item.status === 3) {
+    return 'bg-red-50'
+  }
+}
+
+
+let load = 0
+let loadSuccess = 0
 const data = reactive({
+  phoneData: "0",
   clockTotal: 0,
   reportTotal: 0,
   initClockPageNum: 1,
   initReportNum: 1,
+  initHistoricalPageNum: 1,
   tagActiveType: 'all',
   clockTypeActiveIndex: 'gxy',
+  historicalList: [],
   clockList: [],
   backupList: [],
   backupData: [],
@@ -344,6 +423,40 @@ const data = reactive({
   ]
 })
 
+const foramDate = (val) => {
+  const date = new Date(val);
+  const year = date.getFullYear();
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const day = ("0" + date.getDate()).slice(-2);
+  const hours = ("0" + date.getHours()).slice(-2);
+  const minutes = ("0" + date.getMinutes()).slice(-2);
+  const seconds = ("0" + date.getSeconds()).slice(-2);
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+const historicalRecord = async (item) => {
+  show.value = true
+  data.phoneData = item.phone
+  data.historicalList = []
+  data.initHistoricalPageNum=1
+  // router.push({path: '/historicalRecord', query: {phone: item.phone}})
+  historicalRecordFinished.value = false;
+}
+
+const historicalListOnLoad = async () => {
+  const res = await DailyCheckInControllerService.listDailyCheckInByPageUsingPost({
+    phone: data.phoneData, current: data.initHistoricalPageNum,
+  })
+  if (res.code === 0) {
+    if (res.data.records.length <= 0) {
+      historicalRecordFinished.value = true
+    } else {
+      data.historicalList.push(...res.data.records)
+      data.initHistoricalPageNum += 1;
+    }
+  }
+  historicalRecordLoading.value = false
+}
+
 const list = ref([]);
 const clockLoding = ref(false);
 const clockFinished = ref(false);
@@ -356,6 +469,29 @@ const initSearchParams = {
   pageSize: 10,
   pageNum: 1,
 };
+const getLatitudeAndLongitude = (item) => {
+  return item.latitude + "," + item.longitude
+}
+
+const getSignInCycle = (item) => {
+  const data = JSON.parse(item.selectClockDay);
+  const weekdaysMap = new Map([
+    ['2', '周一'],
+    ['3', '周二'],
+    ['4', '周三'],
+    ['5', '周四'],
+    ['6', '周五'],
+    ['7', '周六'],
+    ['1', '周日']
+  ]);
+  data.sort();
+  let result = '';
+  data.forEach(day => {
+    result += weekdaysMap.get(day) + ' ';
+  });
+  return result.trim();
+};
+
 const clockInfoEnumStatus = {
   'off': 0,
   'open': 1,
@@ -368,8 +504,23 @@ const clockEnumStatus = {
   2: 'success',
   3: 'danger'
 }
+const clockEnumStatusClass = {
+  0: '',
+  1: 'text-blue-500',
+  2: 'text-green-500',
+  3: 'text-red-500'
+}
 const searchText = ref(route.query.text || "");
 const searchParams = ref(initSearchParams);
+
+
+const onCancel = () => {
+  searchText.value = ''
+}
+const change = (val) => {
+  // searchText.value=val.value
+  console.log(val);
+}
 const loadDataOld = async (params: any) => {
   if (data.clockTypeActiveIndex !== 'report') {
     const clockQuery = {
@@ -381,17 +532,25 @@ const loadDataOld = async (params: any) => {
       ...clockQuery,
       clockStatus: clockStatus
     })
-    if (res.data && res.code) {
+    if (res.data && res.code === 0) {
       data.clockList = res.data?.records || []
       data.backupData = res.data?.records || []
       data.clockTotal = res.data.total
     }
+    clockFinished.value = false
+  } else {
+    const res = await ClockReportControllerService.listClockReportByPageUsingPost({
+      ...params,
+      searchText: params.text
+    })
+    if (res.code === 0 && res.data) {
+      data.reportList = res.data?.records || []
+      data.reportBackupList = res.data?.records || []
+      data.reportTotal = res.data.total
+    }
+    reportFinished.value = false
   }
 };
-
-const onCancel = () => {
-  searchText.value = ''
-}
 watchEffect(async () => {
   let {text, clockType, tagType} = route.query
   searchParams.value = {
@@ -403,11 +562,10 @@ watchEffect(async () => {
   data.clockTypeActiveIndex = clockType ? clockType : data.clockTypeActiveIndex
   data.tagActiveType = tagType ? tagType : data.tagActiveType
   await loadDataOld(searchParams.value);
-
 });
 
 
-const searchTag = (val: any) => {
+const searchTag = async (val: any) => {
   data.tagActiveType = val
   if (data.clockTypeActiveIndex !== 'report') {
     if (val !== "all") {
@@ -416,15 +574,19 @@ const searchTag = (val: any) => {
     } else {
       data.clockList = data.backupData
     }
+    data.initClockPageNum=1
+    clockFinished.value = false
   } else {
     if (val !== "all") {
       data.reportList = data.reportBackupList.filter(report => report.type === val)
     } else {
       data.reportList = data.reportBackupList
     }
+    data.initReportNum=1
+    reportFinished.value = false
   }
 
-  router.push({
+  await router.push({
     query: {
       ...searchParams.value,
       tagType: data.tagActiveType,
@@ -439,11 +601,18 @@ const selectDefaultTagType = async (val) => {
     if (res.code === 0) {
       data.clockList = res.data?.records || []
       data.backupData = res.data?.records || []
+      data.clockTotal = res.data.total
     }
     if (!data.statusTagList.some(statusType => statusType.type === data.tagActiveType)) {
       data.tagActiveType = "all"
     }
   } else {
+    const res = await ClockReportControllerService.listClockReportByPageUsingPost({})
+    if (res.code === 0 && res.data) {
+      data.reportList = res.data?.records || []
+      data.reportBackupList = res.data?.records || []
+      data.reportTotal = res.data.total
+    }
     if (!data.reportTagList.some(reportType => reportType.type === data.tagActiveType)) {
       data.tagActiveType = "day"
     }
@@ -461,6 +630,8 @@ const selectClockType = (val) => {
   });
   selectDefaultTagType(val)
   data.clockList = data.backupData.filter(clock => clock.type === data.clockTypeActiveIndex)
+  data.initClockPageNum=1
+  clockFinished.value = false
 }
 
 const onSearch = async (val) => {
@@ -486,6 +657,7 @@ const onSearch = async (val) => {
     if (clockRes.code === 0 && clockRes.data) {
       data.clockList = clockRes.data?.records || []
       data.backupData = clockRes.data?.records || []
+      data.clockTotal = clockRes.data.total
     }
   } else {
     const res = await ClockReportControllerService.listClockReportByPageUsingPost({
@@ -495,6 +667,7 @@ const onSearch = async (val) => {
     if (res.code === 0 && res.data) {
       data.reportList = res.data?.records || []
       data.reportBackupList = res.data?.records || []
+      data.reportTotal = res.data.total
     }
   }
 };
@@ -510,12 +683,19 @@ const onLoad = async () => {
     current: data.initClockPageNum,
     clockStatus: clockStatus
   })
+
   if (res.code === 0) {
     if (res.data.records.length <= 0) {
       clockFinished.value = true;
     } else {
-      data.clockList.push(...res.data.records)
-      data.backupData.push(...res.data.records)
+      data.clockList = data.clockList.filter(item => {
+        return !res.data.records.some(record => record.id === item.id);
+      });
+      data.backupData = data.backupData.filter(item => {
+        return !res.data.records.some(record => record.id === item.id);
+      });
+      data.clockList.push(...res.data.records);
+      data.backupData.push(...res.data.records);
       data.clockTotal = res.data.total
       data.initClockPageNum += 1;
     }
@@ -532,6 +712,12 @@ const reportLoad = async () => {
     if (res.data.records.length <= 0) {
       reportFinished.value = true;
     } else {
+      data.reportList = data.reportList.filter(item => {
+        return !res.data.records.some(record => record.id === item.id);
+      });
+      data.reportBackupList = data.reportBackupList.filter(item => {
+        return !res.data.records.some(record => record.id === item.id);
+      });
       data.reportList.push(...res.data?.records)
       data.reportBackupList.push(...res.data?.records)
       data.reportTotal = res.data.total
@@ -556,7 +742,7 @@ const reportEnumStatus = {
 }
 const reportEnumStatusMessage = {
   0: '未开启',
-  1: '填写中...',
+  1: '填写中',
   2: '填写成功',
   3: '填写失败'
 }
@@ -591,9 +777,7 @@ const stopClock = async (item) => {
     showSuccessToast("打卡暂停成功")
   }
 }
-const historicalRecord = (item) => {
-  router.push({path: '/historicalRecord', query: {phone: item.phone}})
-}
+
 const deleteClock = (item) => {
   showConfirmDialog({
     title: '确认删除该打卡信息？',

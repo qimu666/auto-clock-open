@@ -11,7 +11,6 @@
         />
         <van-field
             v-model="data.clock.password"
-            type="password"
             name="password"
             label="工学云密码："
             placeholder="工学云密码"
@@ -491,6 +490,7 @@ const getClockInfo = async () => {
           ...data.clock,
           ...res.data
         }
+        doClockInfo.value=["1"]
         data.loading = false
       }, 1500)
     } else {

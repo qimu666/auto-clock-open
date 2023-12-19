@@ -39,30 +39,6 @@
           </div>
         </template>
       </van-cell>
-      <van-cell value="2455522521516">
-        <template #title>
-          <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                 stroke="currentColor" class="w-5 h-5 stroke-1">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
-            </svg>
-            <span class="custom-title">&nbsp;通知邮箱</span>
-          </div>
-        </template>
-      </van-cell>
-      <van-cell value="asasdsadsaddddddddd">
-        <template #title>
-          <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                 stroke="currentColor" class="w-5 h-5 stroke-1">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/>
-            </svg>
-            <span class="custom-title">&nbsp;推送Token</span>
-          </div>
-        </template>
-      </van-cell>
     </van-cell-group>
     <div class="mt-2">
       <van-button block>退出登录</van-button>
