@@ -97,7 +97,7 @@ id?: string,
      * @param searchText 
      * @param sortField 
      * @param sortOrder 
-     * @param type 
+     * @param tagType 
      * @returns BaseResponse_List_ClockReport_ OK
      * @throws ApiError
      */
@@ -110,7 +110,7 @@ pageSize?: number,
 searchText?: string,
 sortField?: string,
 sortOrder?: string,
-type?: string,
+tagType?: string,
 ): CancelablePromise<BaseResponse_List_ClockReport_> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -124,7 +124,7 @@ type?: string,
                 'searchText': searchText,
                 'sortField': sortField,
                 'sortOrder': sortOrder,
-                'type': type,
+                'tagType': tagType,
             },
             errors: {
                 401: `Unauthorized`,

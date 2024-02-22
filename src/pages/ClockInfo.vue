@@ -149,7 +149,9 @@
                 </div>
                 <div>
                   <label>打卡周期：</label>
-                  <span class="">{{ getSignInCycle(item) }}</span>
+                  <span class="">{{
+                      getSignInCycle(item).length > 0 ? getSignInCycle(item) : "暂未选择打卡周期"
+                    }}</span>
                 </div>
                 <div>
                   <label>剩余天数：</label>
@@ -172,7 +174,7 @@
                   </span>
                 </div>
                 <div>
-                  <label>最后一次日报填写状态：</label>
+                  <label>最后一次月报填写状态：</label>
                   <span class="">
                     {{ reportEnumStatusMessage[item.monthNewspaperStatus] }}
                   </span>
@@ -198,6 +200,13 @@
                            stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                               d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5"/>
+                      </svg>
+                    </div>
+                    <div @click="doSupplementaryReport(item)">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                           stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75"/>
                       </svg>
                     </div>
                     <div @click="openClock(item)" v-if="item.clockStatus!==1&&item.clockStatus!==2">
@@ -288,34 +297,79 @@
     </div>
   </div>
   <van-dialog v-model:show="show" :title="'账号：'+data.phoneData+' 日志'">
-    <div class="h-96 overflow-auto">
-      <div class="h-1"></div>
+    <div class="flex h-5 justify-center text-sm text-red-500">每月1号12点清空日志</div>
+    <div v-show="show" class="h-96 overflow-auto">
       <van-list
-          class="min-h-[400px]"
+          class="min-h-[420px]"
           v-model:loading="historicalRecordLoading"
           :finished="historicalRecordFinished"
           finished-text="没有更多了"
           error-text="请求失败，点击重新加载"
           @load="historicalListOnLoad"
       >
-        <!--      <div class="mt-2 bg-white flex items-center justify-center text-l h-10">账号：{{ phoneData }}</div>-->
-        <!--      <div class="h-2"></div>-->
-        <!--      <div class="mt-2" :class="bgColor(item)" v-for="item in data.record">-->
-        <!--        <div class="h-2"></div>-->
-        <!--        <div class="mx-2">-->
-        <!--          <p class="flex items-center justify-center">{{ foramDate(item.createTime) }}</p>-->
-        <!--          <p class="flex items-center justify-center">{{ item.description }}</p>-->
-        <!--        </div>-->
-        <!--        <div class="h-2"></div>-->
-        <!--      </div>-->
-        <van-cell-group>
-          <van-cell :class="bgColor(item)" v-for="item in data.historicalList"
-                    :title="foramDate(item.createTime) +' ' +item.description"/>
-        </van-cell-group>
+        <!--        <van-cell-group>-->
+        <div class="h-1"></div>
+        <van-cell :class="bgColor(item)" v-for="item in data.historicalList"
+                  :title="foramDate(item.createTime) +' ' +item.description"/>
+        <!--        </van-cell-group>-->
       </van-list>
     </div>
   </van-dialog>
-
+  <van-dialog show-cancel-button @confirm="onSubmit" v-model:show="doSupplementaryReportStatus"
+              :title="'补报告 【'+data.phoneData+'】'">
+    <div>
+      <van-form>
+        <van-cell-group inset>
+          <div class="text-sm ml-4 mt-2 text-red-500 font-bold">
+            <div>日报、周报、月报每篇扣费为10积分</div>
+            <div>日报周报支持防重复提交，月报不支持！</div>
+            <div>提交后不可取消补写！请认真核对信息！</div>
+          </div>
+          <van-field name="reportSource" label="报告类型：">
+            <template #input>
+              <van-radio-group v-model="data.doSupplementaryReportData.type" @change="groupCheckedA"
+                               direction="horizontal"
+              >
+                <van-radio @click="selectSupplementaryReportDay" name="day">日报</van-radio>
+                <br>
+                <van-radio @click="selectSupplementaryReportWeek" name="week">周报</van-radio>
+                <br>
+                <van-radio @click="selectSupplementaryReportMonth" name="month">月报</van-radio>
+                <br>
+              </van-radio-group>
+            </template>
+          </van-field>
+          <van-field
+              v-model="data.doSupplementaryReportData.startTime"
+              is-link
+              readonly
+              name="datePicker"
+              label="开始时间"
+              placeholder="点击选择时间"
+              @click="showStartTimePicker = true"
+          />
+          <van-field
+              v-model="data.doSupplementaryReportData.endTime"
+              is-link
+              readonly
+              name="datePicker2"
+              label="结束时间"
+              placeholder="点击选择时间"
+              @click="showEndTimePicker = true"
+          />
+        </van-cell-group>
+      </van-form>
+    </div>
+  </van-dialog>
+  <van-popup v-model:show="showStartTimePicker" position="bottom">
+    <van-date-picker v-model="formattedStartDateArray" @confirm="onConfirm"
+                     :max-date="new Date()"
+                     @cancel="showStartTimePicker = false"/>
+  </van-popup>
+  <van-popup v-model:show="showEndTimePicker" position="bottom">
+    <van-date-picker v-model="formattedEndDateArray" @confirm="onConfirm2" :max-date="new Date()"
+                     @cancel="showEndTimePicker = false"/>
+  </van-popup>
 </template>
 
 <script setup lang="ts">
@@ -330,6 +384,7 @@ import {
 import {showConfirmDialog, showSuccessToast} from "vant";
 
 const show = ref(false);
+const doSupplementaryReportStatus = ref(false);
 
 const historicalRecordFinished = ref(false)
 const historicalRecordLoading = ref(false)
@@ -341,8 +396,24 @@ const bgColor = (item) => {
     return 'bg-red-50'
   }
 }
-
-
+let startTime = new Date();
+// 格式化日期为年-月-日的字符串
+let startFormattedDate = startTime.getFullYear() + '-' +
+    ('0' + (startTime.getMonth() + 1)).slice(-2) + '-' +
+    ('0' + startTime.getDate()).slice(-2);
+let formattedStartDateArray = [
+  startTime.getFullYear(),
+  startTime.getMonth() + 1,
+  startTime.getDate()
+];
+let endFormattedDate = startTime.getFullYear() + '-' +
+    ('0' + (startTime.getMonth() + 1)).slice(-2) + '-' +
+    ('0' + startTime.getDate()).slice(-2);
+let formattedEndDateArray = [
+  startTime.getFullYear(),
+  startTime.getMonth() + 1, // 月份需要加1，因为月份是从0开始计数的
+  startTime.getDate()
+];
 let load = 0
 let loadSuccess = 0
 const data = reactive({
@@ -360,6 +431,12 @@ const data = reactive({
   backupData: [],
   reportBackupList: [],
   reportList: [],
+  doSupplementaryReportData: {
+    id: "",
+    type: "day",
+    endTime: endFormattedDate,
+    startTime: startFormattedDate
+  },
   statusTagList: [
     {
       id: '6',
@@ -422,7 +499,31 @@ const data = reactive({
     },
   ]
 })
+const showStartTimePicker = ref(false);
+const showEndTimePicker = ref(false);
 
+const onConfirm = ({selectedValues}) => {
+  data.doSupplementaryReportData.startTime = selectedValues.join('-');
+  showStartTimePicker.value = false;
+};
+const onConfirm2 = ({selectedValues}) => {
+  data.doSupplementaryReportData.endTime = selectedValues.join('-');
+  showEndTimePicker.value = false;
+};
+const selectSupplementaryReportDay = () => {
+
+}
+const selectSupplementaryReportWeek = () => {
+
+}
+const selectSupplementaryReportMonth = () => {
+
+}
+const doSupplementaryReport = (item) => {
+  data.phoneData = item.phone
+  data.doSupplementaryReportData.id = item.id
+  doSupplementaryReportStatus.value = true
+}
 const foramDate = (val) => {
   const date = new Date(val);
   const year = date.getFullYear();
@@ -437,7 +538,7 @@ const historicalRecord = async (item) => {
   show.value = true
   data.phoneData = item.phone
   data.historicalList = []
-  data.initHistoricalPageNum=1
+  data.initHistoricalPageNum = 1
   // router.push({path: '/historicalRecord', query: {phone: item.phone}})
   historicalRecordFinished.value = false;
 }
@@ -473,6 +574,27 @@ const getLatitudeAndLongitude = (item) => {
   return item.latitude + "," + item.longitude
 }
 
+const onSubmit = async () => {
+  showConfirmDialog({
+    title: '确认立即补该账号' + report[data.doSupplementaryReportData.type] + '？',
+    message:
+        '请再次确认是否补该账号' + report[data.doSupplementaryReportData.type] + '？' + data.phoneData + ',该操作不可取消！',
+  })
+      .then(async () => {
+        const res = await ClockInControllerService.doSupplementaryReportUsingPost(JSON.stringify(data.doSupplementaryReportData))
+        if (res.code === 0 && res.data) {
+          showSuccessToast(report[data.doSupplementaryReportData.type] + '任务已开启，请稍后前往日志记录查看')
+          doSupplementaryReportStatus.value = false
+        }
+      })
+      .catch(() => {
+        // on cancel
+      });
+}
+const groupCheckedA = () => {
+  console.log(data.doSupplementaryReportData)
+}
+
 const getSignInCycle = (item) => {
   const data = JSON.parse(item.selectClockDay);
   const weekdaysMap = new Map([
@@ -503,6 +625,11 @@ const clockEnumStatus = {
   1: 'primary',
   2: 'success',
   3: 'danger'
+}
+const report = {
+  'day': '日报',
+  'week': '周报',
+  'month': '月报',
 }
 const clockEnumStatusClass = {
   0: '',
@@ -574,7 +701,7 @@ const searchTag = async (val: any) => {
     } else {
       data.clockList = data.backupData
     }
-    data.initClockPageNum=1
+    data.initClockPageNum = 1
     clockFinished.value = false
   } else {
     if (val !== "all") {
@@ -582,7 +709,7 @@ const searchTag = async (val: any) => {
     } else {
       data.reportList = data.reportBackupList
     }
-    data.initReportNum=1
+    data.initReportNum = 1
     reportFinished.value = false
   }
 
@@ -630,7 +757,7 @@ const selectClockType = (val) => {
   });
   selectDefaultTagType(val)
   data.clockList = data.backupData.filter(clock => clock.type === data.clockTypeActiveIndex)
-  data.initClockPageNum=1
+  data.initClockPageNum = 1
   clockFinished.value = false
 }
 
@@ -651,6 +778,7 @@ const onSearch = async (val) => {
   }
   if (type !== "report") {
     const clockRes = await ClockInInfoControllerService.listClockInInfoByPageUsingPost({
+      ...searchParams.value,
       searchText: val,
       clockStatus: clockStatus
     })

@@ -20,6 +20,9 @@
           <template #input>
             <van-radio-group v-model="data.clockType" direction="horizontal">
               <van-radio name="gxy">工学云</van-radio>
+              <br/>
+              <van-radio name="zxjy">职校家园</van-radio>
+              <br/>
               <van-radio name="qt">其他</van-radio>
             </van-radio-group>
           </template>

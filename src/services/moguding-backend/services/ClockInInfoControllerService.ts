@@ -113,6 +113,7 @@ id?: string,
      * @param selectClockDay 
      * @param sortField 
      * @param sortOrder 
+     * @param tagType 
      * @param type 
      * @param userId 
      * @param weekNewspaperStatus 
@@ -144,6 +145,7 @@ searchText?: string,
 selectClockDay?: string,
 sortField?: string,
 sortOrder?: string,
+tagType?: string,
 type?: string,
 userId?: number,
 weekNewspaperStatus?: number,
@@ -176,6 +178,7 @@ weekNewspaperStatus?: number,
                 'selectClockDay': selectClockDay,
                 'sortField': sortField,
                 'sortOrder': sortOrder,
+                'tagType': tagType,
                 'type': type,
                 'userId': userId,
                 'weekNewspaperStatus': weekNewspaperStatus,
@@ -214,6 +217,7 @@ weekNewspaperStatus?: number,
      * @param selectClockDay 
      * @param sortField 
      * @param sortOrder 
+     * @param tagType 
      * @param type 
      * @param userId 
      * @param weekNewspaperStatus 
@@ -245,6 +249,7 @@ searchText?: string,
 selectClockDay?: string,
 sortField?: string,
 sortOrder?: string,
+tagType?: string,
 type?: string,
 userId?: number,
 weekNewspaperStatus?: number,
@@ -277,6 +282,7 @@ weekNewspaperStatus?: number,
                 'selectClockDay': selectClockDay,
                 'sortField': sortField,
                 'sortOrder': sortOrder,
+                'tagType': tagType,
                 'type': type,
                 'userId': userId,
                 'weekNewspaperStatus': weekNewspaperStatus,

@@ -33,7 +33,7 @@
                 v-model="data.clock.jobName"
                 name="jobName"
                 label="职位"
-                placeholder="职位"
+                placeholder="请正确填写你的职位（将影响你的报告填写）"
             />
             <van-field
                 v-model="data.clock.jobAddress"
@@ -53,14 +53,12 @@
             <van-field
                 v-model="data.clock.longitude"
                 label="经度："
-                readonly
                 placeholder="经度（根据公司地址自动生成）"
                 :rules="[{ required: true, message: '请填写经度' }]"
             />
             <van-field
                 v-model="data.clock.latitude"
                 name="latitude"
-                readonly
                 label="纬度："
                 placeholder="纬度（根据公司地址自动生成）"
                 :rules="[{ required: true, message: '请填写纬度' }]"
@@ -544,6 +542,7 @@ const onSubmit = async () => {
     , clockDays: data.defaultClockInfo.clockDays,
     startTime: data.defaultClockInfo.startTime,
     endTime: data.defaultClockInfo.endTime,
+    type:'gxy',
     reportSource: data.defaultClockInfo.reportSource,
     dailyNewspaperStatus: data.defaultClockInfo.startDayLyNewspaper ? 1 : 0,
     monthNewspaperStatus: data.defaultClockInfo.startMonthLyNewspaper ? 1 : 0,

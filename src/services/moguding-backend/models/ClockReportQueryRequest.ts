@@ -12,5 +12,5 @@ export type ClockReportQueryRequest = {
     searchText?: string;
     sortField?: string;
     sortOrder?: string;
-    type?: string;
+    tagType?: string;
 };

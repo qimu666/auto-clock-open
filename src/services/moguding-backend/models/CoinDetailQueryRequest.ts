@@ -10,7 +10,9 @@ export type CoinDetailQueryRequest = {
     description?: string;
     id?: number;
     isDelete?: number;
+    nikeName?: string;
     pageSize?: number;
+    phone?: string;
     sortField?: string;
     sortOrder?: string;
     type?: string;

@@ -9,6 +9,8 @@ export type CoinDetail = {
     description?: string;
     id?: number;
     isDelete?: number;
+    nikeName?: string;
+    phone?: string;
     type?: string;
     updateTime?: string;
     userId?: number;

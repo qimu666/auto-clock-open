@@ -28,6 +28,7 @@ export type ClockInInfoQueryRequest = {
     selectClockDay?: string;
     sortField?: string;
     sortOrder?: string;
+    tagType?: string;
     type?: string;
     userId?: number;
     weekNewspaperStatus?: number;
