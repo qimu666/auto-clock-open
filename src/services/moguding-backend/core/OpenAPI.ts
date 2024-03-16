@@ -20,7 +20,7 @@ export type OpenAPIConfig = {
 };
 
 export const OpenAPI: OpenAPIConfig = {
-    BASE: process.env.NODE_ENV === "development" ? 'http://localhost:7529' : 'http://154.12.81.254:9806',
+    BASE: `${import.meta.env.VITE_API_PREFIX}`,
     VERSION: '1.0',
     WITH_CREDENTIALS: true,
     CREDENTIALS: 'include',

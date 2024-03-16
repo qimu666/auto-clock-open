@@ -14,7 +14,9 @@
             v-else
             :title="title"
         />
-        <van-notice-bar v-if="route.path!=='/mall_management' && dialogStore.basicInformations.noticeBar" scrollable
+        <van-notice-bar v-if="path==='/500'" scrollable
+                        text="服务器异常请联系管理员" mode="closeable"/>
+        <van-notice-bar v-else-if="route.path!=='/mall_management' && dialogStore.basicInformations.noticeBar" scrollable
                         :text="dialogStore.basicInformations.noticeBar" mode="closeable"/>
         <van-notice-bar v-else scrollable text="左划可编辑" mode="closeable"/>
       </div>
@@ -59,8 +61,9 @@ import {BasicInformationControllerService} from "./services/moguding-backend";
 
 const {getLoginUser, loginUser} = useUserStore();
 const dialogStore = useDialogStore();
-
 const WHITE_LIST = ['/login', '/register']
+let path=window.location.pathname
+const writeList=[...WHITE_LIST,'/500']
 
 const route = useRoute();
 const basicInformation = ref({})
@@ -79,7 +82,7 @@ const b = ref(false)
 const active = ref(0);
 const router = useRouter();
 router.beforeEach(async (to, from, next) => {
-  if (!WHITE_LIST.includes(to.path)) {
+  if (!writeList.includes(to.path)) {
     await getLoginUser()
   }
   // @ts-ignore
@@ -94,21 +97,23 @@ const onClickLeft = () => {
   return history.back()
 };
 onMounted(async () => {
-  const res = await BasicInformationControllerService.getBasicInformationByIdUsingGet(1)
-  if (res.code === 0 && res.data) {
-    basicInformation.value = res.data
-    dialogStore.basicInformations = res.data
-    if (!dialogStore.isRead) {
-      showConfirmDialog({
-        title: res.data.announcementTitle,
-        message: res.data.announcement,
-      })
-          .then(() => {
-            dialogStore.isRead = true
-          })
-          .catch(() => {
-            dialogStore.isRead = false
-          });
+  if (window.location.pathname==='/') {
+    const res = await BasicInformationControllerService.getBasicInformationByIdUsingGet(1)
+    if (res.code === 0 && res.data) {
+      basicInformation.value = res.data
+      dialogStore.basicInformations = res.data
+      if (!dialogStore.isRead) {
+        showConfirmDialog({
+          title: res.data.announcementTitle,
+          message: res.data.announcement,
+        })
+            .then(() => {
+              dialogStore.isRead = true
+            })
+            .catch(() => {
+              dialogStore.isRead = false
+            });
+      }
     }
   }
 })

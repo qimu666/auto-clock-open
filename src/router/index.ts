@@ -60,6 +60,10 @@ const routes: Array<RouteRecordRaw> = [
         path: "/coinChange",
         name: "积分变更",
         component: () => import("../pages/CoinChange.vue"),
+    }, {
+        path: "/500",
+        name: "500",
+        component: () => import("../components/500.vue"),
     },
     {
         path: "/mall_management",
