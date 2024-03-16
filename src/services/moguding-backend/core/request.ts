@@ -220,7 +220,7 @@ export const sendRequest = async <T>(
     try {
         return await axiosClient.request(requestConfig);
     } catch (error) {
-        // location.href='/500'
+        location.href='/500'
         const axiosError = error as AxiosError<T>;
         if (axiosError.response) {
             return axiosError.response;
