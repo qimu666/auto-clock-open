@@ -8,8 +8,8 @@
 <div align="center">
     <img alt="Maven" src="https://raster.shields.io/badge/Maven-3.8.1-red.svg"/>
    <img alt="SpringBoot" src="https://raster.shields.io/badge/SpringBoot-2.7+-green.svg"/>
-  <a href="https://github.com/qimu666/moguding-backend" target="_blank"><img src='https://img.shields.io/github/forks/qimu666/moguding-backend' alt='GitHub forks' class="no-zoom"></a>
-  <a href="https://github.com/qimu666/moguding-backend" target="_blank"><img src='https://img.shields.io/github/stars/qimu666/moguding-backend' alt='GitHub stars' class="no-zoom"></a>
+  <a href="https://github.com/qimu666/auto-clock" target="_blank"><img src='https://img.shields.io/github/forks/qimu666/auto-clock' alt='GitHub forks' class="no-zoom"></a>
+  <a href="https://github.com/qimu666/auto-clock" target="_blank"><img src='https://img.shields.io/github/stars/qimu666/auto-clock' alt='GitHub stars' class="no-zoom"></a>
 </div>
 
 
@@ -28,8 +28,8 @@
 
 ### 导航 🧭
 
-- **[Auto Clock 自动打卡前端代码](https://github.com/qimu666/Auto-Clock)**
-- **[Auto Clock 自动打卡后端代码](https://github.com/qimu666/Auto-Clock/blob/master/doc/qrcode/wx.jpg)**
+- **[Auto Clock 自动打卡前端代码](https://github.com/qimu666/auto-clock)**
+- **[Auto Clock 自动打卡后端代码](https://github.com/qimu666/auto-clock/blob/master/doc/qrcode/wx.jpg)**
 
 ### 支持平台 🎉
 
@@ -123,13 +123,13 @@ yarn build or npm run build
   <img src="https://img.qimuu.icu/typory/image-20240316151919644.png" alt="image-20240316151919644" style="zoom:67%;" />
   <img src="https://img.qimuu.icu/typory/image-20240316152033937.png" alt="image-20240316152033937" style="zoom:67%;" />
 
-    
+
 
 ## 支持这个项目 :tea:
 
 **如果您正在使用这个项目并感觉良好，或者是想支持我继续开发，您可以通过如下`任意`方式支持我：**
 
-1. Star并分享 [Auto Clock In 自动打卡](https://github.com/qimu666/moguding-backend) :rocket:
+1. Star并分享 [Auto Clock In 自动打卡](https://github.com/qimu666/auto-clock) :rocket:
 2. 通过以下二维码 一次性捐款，打赏作者一杯茶。:tea:
 
 谢谢！ :heart:
@@ -150,15 +150,15 @@ yarn build or npm run build
 
 ### 贡献 🤝
 
-如果您想为 **[Auto Clock 自动打卡](https://github.com/qimu666/Auto-Clock)**
+如果您想为 **[Auto Clock 自动打卡](https://github.com/qimu666/auto-clock)**
 做出贡献，请随时提交拉取请求。我们始终在寻找方法来改进项目，使其对像您这样的开发者更有用。
 
 ### 联系我们 📩
 
-如果您对 **[Auto Clock 自动打卡](https://github.com/qimu666/Auto-Clock)**
+如果您对 **[Auto Clock 自动打卡](https://github.com/qimu666/auto-clock)**
 平台有任何问题或建议，请随时联系我们:📩邮箱：2483482026@qq.com。
 
-感谢您使用 **[Auto Clock 自动打卡](https://github.com/qimu666/Auto-Clock)**   ！ 😊
+感谢您使用 **[Auto Clock 自动打卡](https://github.com/qimu666/auto-clock)**   ！ 😊
 
 ### 致谢
 
