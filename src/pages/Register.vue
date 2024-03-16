@@ -12,7 +12,9 @@
         />
       </div>
       <div class="flex justify-center items-center mt-2 text-3xl text-center font-sans font-bold">
-        自动打卡
+        {{
+          dialogStore.basicInformations&&dialogStore.basicInformations.websiteName && dialogStore.basicInformations.websiteName.trim().length > 0 ? dialogStore.basicInformations.websiteName : "自动打卡"
+        }}
       </div>
       <div class="mt-5">
         <van-form @submit="onSubmit">
@@ -70,6 +72,9 @@ import {reactive} from "vue";
 import {useRouter} from "vue-router";
 import {UserControllerService} from "../services/moguding-backend";
 import {showSuccessToast} from "vant";
+import {useDialogStore} from "../stores/dialogRead";
+
+const dialogStore = useDialogStore();
 
 const router = useRouter()
 const data = reactive({
@@ -86,6 +91,8 @@ const onSubmit = async () => {
     showSuccessToast("注册成功")
     await router.push("/login")
   }
-};</script>
+};
+
+</script>
 
 <style scoped></style>

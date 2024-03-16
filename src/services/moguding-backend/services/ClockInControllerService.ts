@@ -40,18 +40,21 @@ requestBody?: SupplementaryReportRequest,
     /**
      * getChangeClonkAddressInfo
      * @param address address
+     * @param type type
      * @returns BaseResponse_ClockInInfoVo_ OK
      * @returns any Created
      * @throws ApiError
      */
     public static getChangeClonkAddressInfoUsingPost(
 address?: string,
+type?: string,
 ): CancelablePromise<BaseResponse_ClockInInfoVo_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/ClockIn/get/change/clonkAddressInfo',
             query: {
                 'address': address,
+                'type': type,
             },
             errors: {
                 401: `Unauthorized`,
@@ -63,22 +66,28 @@ address?: string,
 
     /**
      * initClockInfo
-     * @param phone phone
-     * @param password password
+     * @param password 
+     * @param phone 
+     * @param phoneType 
+     * @param type 
      * @returns BaseResponse_InitClockInfo_ OK
      * @returns any Created
      * @throws ApiError
      */
     public static initClockInfoUsingPost(
-phone?: string,
 password?: string,
+phone?: string,
+phoneType?: string,
+type?: string,
 ): CancelablePromise<BaseResponse_InitClockInfo_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/ClockIn/get/init/clockInfo',
             query: {
-                'phone': phone,
                 'password': password,
+                'phone': phone,
+                'phoneType': phoneType,
+                'type': type,
             },
             errors: {
                 401: `Unauthorized`,

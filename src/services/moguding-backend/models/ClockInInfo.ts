@@ -31,6 +31,7 @@ export type ClockInInfo = {
     nowClockType?: string;
     password?: string;
     phone?: string;
+    phoneType?: string;
     platformId?: number;
     province?: string;
     pushToken?: string;

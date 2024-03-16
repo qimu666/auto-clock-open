@@ -24,6 +24,7 @@ export type ClockInInfoUpdateRequest = {
     nikeName?: string;
     password?: string;
     phone?: string;
+    phoneType?: string;
     platformId?: number;
     province?: string;
     pushToken?: string;

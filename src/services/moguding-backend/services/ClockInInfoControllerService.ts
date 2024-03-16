@@ -92,6 +92,7 @@ id?: string,
      * @param clockAddress 
      * @param clockDays 
      * @param clockStatus 
+     * @param clockType 
      * @param clockedSuccessDays 
      * @param current 
      * @param dailyNewspaperStatus 
@@ -124,6 +125,7 @@ id?: string,
 clockAddress?: string,
 clockDays?: number,
 clockStatus?: number,
+clockType?: string,
 clockedSuccessDays?: number,
 current?: number,
 dailyNewspaperStatus?: number,
@@ -157,6 +159,7 @@ weekNewspaperStatus?: number,
                 'clockAddress': clockAddress,
                 'clockDays': clockDays,
                 'clockStatus': clockStatus,
+                'clockType': clockType,
                 'clockedSuccessDays': clockedSuccessDays,
                 'current': current,
                 'dailyNewspaperStatus': dailyNewspaperStatus,
@@ -196,6 +199,7 @@ weekNewspaperStatus?: number,
      * @param clockAddress 
      * @param clockDays 
      * @param clockStatus 
+     * @param clockType 
      * @param clockedSuccessDays 
      * @param current 
      * @param dailyNewspaperStatus 
@@ -228,6 +232,7 @@ weekNewspaperStatus?: number,
 clockAddress?: string,
 clockDays?: number,
 clockStatus?: number,
+clockType?: string,
 clockedSuccessDays?: number,
 current?: number,
 dailyNewspaperStatus?: number,
@@ -261,6 +266,7 @@ weekNewspaperStatus?: number,
                 'clockAddress': clockAddress,
                 'clockDays': clockDays,
                 'clockStatus': clockStatus,
+                'clockType': clockType,
                 'clockedSuccessDays': clockedSuccessDays,
                 'current': current,
                 'dailyNewspaperStatus': dailyNewspaperStatus,

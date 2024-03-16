@@ -2,17 +2,18 @@
   <div style="height: 100%">
     <div>
       <br> <br> <br> <br><br>
-            <div class="flex justify-center items-center mt-2">
-              <van-image
-                  class="border border-white"
-                  round
-                  width="6rem"
-                  height="6rem"
-                  src="/logo.gif"
-              />
-            </div>
+      <div class="flex justify-center items-center mt-2">
+        <van-image
+            class="border border-white"
+            round
+            width="6rem"
+            height="6rem"
+            src="/logo.gif"
+        />
+      </div>
       <div class="flex justify-center items-center mt-3 text-3xl text-center font-sans font-bold">
-        自动打卡
+        {{           dialogStore.basicInformations&&dialogStore.basicInformations.websiteName && dialogStore.basicInformations.websiteName.trim().length > 0 ? dialogStore.basicInformations.websiteName : "自动打卡"
+        }}
       </div>
       <div class="mt-5">
         <van-form>
@@ -57,6 +58,9 @@ import {reactive} from "vue";
 import {useRouter} from "vue-router";
 import {showSuccessToast} from "vant";
 import {useUserStore} from "../stores/user";
+import {useDialogStore} from "../stores/dialogRead";
+
+const dialogStore = useDialogStore();
 
 const userStore = useUserStore();
 const router = useRouter()

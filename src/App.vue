@@ -83,7 +83,7 @@ router.beforeEach(async (to, from, next) => {
     await getLoginUser()
   }
   // @ts-ignore
-  const resTitle = useTitle(to.name ? to.name : "自动打卡");
+  const resTitle = useTitle(to.name ? to.name : basicInformation.value.websiteName ? basicInformation.value.websiteName : "自动打卡");
   title.value = resTitle.value
   next();
 });

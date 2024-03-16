@@ -139,13 +139,21 @@
                   </van-tag>
                   &nbsp;每月最后一天提交
                 </div>
-                <div>
-                  <label>上班打卡时间：</label>
-                  <span class="">{{ item.startTime }}</span>
+                <div v-if="data.clockTypeActiveIndex==='gxy'">
+                  <div>
+                    <label>上班打卡时间：</label>
+                    <span class="">{{ item.startTime }}</span>
+                  </div>
+                  <div>
+                    <label>下班打卡时间：</label>
+                    <span class="">{{ item.endTime }}</span>
+                  </div>
                 </div>
-                <div>
-                  <label>下班打卡时间：</label>
-                  <span class="">{{ item.endTime }}</span>
+                <div v-if="data.clockTypeActiveIndex==='zxjy'">
+                  <div>
+                    <label>打卡时间：</label>
+                    <span class="">{{ item.startTime }}</span>
+                  </div>
                 </div>
                 <div>
                   <label>打卡周期：</label>
@@ -230,7 +238,7 @@
                               d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
                     </div>
-                    <div @click="updateClock(item.id)">
+                    <div @click="updateClock(item)">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                            stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -297,7 +305,7 @@
     </div>
   </div>
   <van-dialog v-model:show="show" :title="'账号：'+data.phoneData+' 日志'">
-    <div class="flex h-5 justify-center text-sm text-red-500">每月1号12点清空日志</div>
+    <div class="flex h-5 justify-center text-sm text-red-500"><p>每月1号12点清空日志</p>,白屏请滑动滚动条</div>
     <div v-show="show" class="h-96 overflow-auto">
       <van-list
           class="min-h-[420px]"
@@ -322,7 +330,7 @@
         <van-cell-group inset>
           <div class="text-sm ml-4 mt-2 text-red-500 font-bold">
             <div>日报、周报、月报每篇扣费为10积分</div>
-            <div>日报周报支持防重复提交，月报不支持！</div>
+            <div v-if="data.clockTypeActiveIndex==='gxy'">日报周报支持防重复提交，月报不支持！</div>
             <div>提交后不可取消补写！请认真核对信息！</div>
           </div>
           <van-field name="reportSource" label="报告类型：">
@@ -347,6 +355,13 @@
               label="开始时间"
               placeholder="点击选择时间"
               @click="showStartTimePicker = true"
+          />
+          <van-field
+              v-if="data.clockTypeActiveIndex==='zxjy'"
+              v-model="data.doSupplementaryReportData.reportAddress"
+              name="reportAddress"
+              label="报告地址"
+              placeholder="报告地址 (留空默认公司地址)"
           />
           <van-field
               v-model="data.doSupplementaryReportData.endTime"
@@ -419,12 +434,15 @@ let loadSuccess = 0
 const data = reactive({
   phoneData: "0",
   clockTotal: 0,
+  type:'',
   reportTotal: 0,
   initClockPageNum: 1,
   initReportNum: 1,
   initHistoricalPageNum: 1,
   tagActiveType: 'all',
-  clockTypeActiveIndex: 'gxy',
+  // todo
+  clockTypeActiveIndex: 'zxjy',
+  // clockTypeActiveIndex: 'gxy',
   historicalList: [],
   clockList: [],
   backupList: [],
@@ -433,6 +451,8 @@ const data = reactive({
   reportList: [],
   doSupplementaryReportData: {
     id: "",
+    platformType: "",
+    reportAddress: "",
     type: "day",
     endTime: endFormattedDate,
     startTime: startFormattedDate
@@ -487,10 +507,15 @@ const data = reactive({
     },
   ],
   clockTypeList: [
+    // {
+    //   id: '2',
+    //   tagName: '工学云',
+    //   type: 'gxy'
+    // },
     {
-      id: '2',
-      tagName: '工学云',
-      type: 'gxy'
+      id: '3',
+      tagName: '职校家园',
+      type: 'zxjy'
     },
     {
       id: '1',
@@ -520,8 +545,10 @@ const selectSupplementaryReportMonth = () => {
 
 }
 const doSupplementaryReport = (item) => {
+  console.log(item)
   data.phoneData = item.phone
   data.doSupplementaryReportData.id = item.id
+  data.doSupplementaryReportData.platformType = item.type
   doSupplementaryReportStatus.value = true
 }
 const foramDate = (val) => {
@@ -535,8 +562,10 @@ const foramDate = (val) => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 const historicalRecord = async (item) => {
+  console.log(item)
   show.value = true
   data.phoneData = item.phone
+  data.type=item.type
   data.historicalList = []
   data.initHistoricalPageNum = 1
   // router.push({path: '/historicalRecord', query: {phone: item.phone}})
@@ -545,7 +574,7 @@ const historicalRecord = async (item) => {
 
 const historicalListOnLoad = async () => {
   const res = await DailyCheckInControllerService.listDailyCheckInByPageUsingPost({
-    phone: data.phoneData, current: data.initHistoricalPageNum,
+    phone: data.phoneData, current: data.initHistoricalPageNum,type:data.type
   })
   if (res.code === 0) {
     if (res.data.records.length <= 0) {
@@ -722,9 +751,38 @@ const searchTag = async (val: any) => {
   });
 }
 
+const selectClockType = (val) => {
+  console.log(val)
+  data.clockTypeActiveIndex = val
+  router.push({
+    query: {
+      ...searchParams.value,
+      tagType: data.tagActiveType,
+      clockType: data.clockTypeActiveIndex
+    },
+  });
+  selectDefaultTagType(val)
+  data.clockList = data.backupData.filter(clock => clock.type === data.clockTypeActiveIndex)
+  data.initClockPageNum = 1
+  clockFinished.value = false
+}
+
 const selectDefaultTagType = async (val) => {
   if (val && val !== 'report') {
-    const res = await ClockInInfoControllerService.listClockInInfoByPageUsingPost({})
+    let clockStatus = 0;
+    if (route.query.tagType) {
+      clockStatus = clockInfoEnumStatus[route.query.tagType];
+    }
+    let type = "gxy";
+    if (route.query.clockType) {
+      type = route.query.clockType as string;
+    }
+    const res = await ClockInInfoControllerService.listClockInInfoByPageUsingPost({
+      ...searchParams.value,
+      clockStatus: clockStatus,
+      searchText: searchParams.value.text,
+      clockType: type,
+    })
     if (res.code === 0) {
       data.clockList = res.data?.records || []
       data.backupData = res.data?.records || []
@@ -746,20 +804,6 @@ const selectDefaultTagType = async (val) => {
   }
 }
 
-const selectClockType = (val) => {
-  data.clockTypeActiveIndex = val
-  router.push({
-    query: {
-      ...searchParams.value,
-      tagType: data.tagActiveType,
-      clockType: data.clockTypeActiveIndex
-    },
-  });
-  selectDefaultTagType(val)
-  data.clockList = data.backupData.filter(clock => clock.type === data.clockTypeActiveIndex)
-  data.initClockPageNum = 1
-  clockFinished.value = false
-}
 
 const onSearch = async (val) => {
   await router.push({
@@ -780,7 +824,8 @@ const onSearch = async (val) => {
     const clockRes = await ClockInInfoControllerService.listClockInInfoByPageUsingPost({
       ...searchParams.value,
       searchText: val,
-      clockStatus: clockStatus
+      clockStatus: clockStatus,
+      clockType: type,
     })
     if (clockRes.code === 0 && clockRes.data) {
       data.clockList = clockRes.data?.records || []
@@ -809,6 +854,7 @@ const onLoad = async () => {
   const res = await ClockInInfoControllerService.listClockInInfoByPageUsingPost({
     ...searchParams.value,
     current: data.initClockPageNum,
+    searchText: searchParams.value.text,
     clockStatus: clockStatus
   })
 
@@ -924,10 +970,10 @@ const deleteClock = (item) => {
         // on cancel
       });
 }
-const updateClock = (id) => {
+const updateClock = (item) => {
   router.push({
-    path: '/update',
-    query: {id: id}
+    path: `${item.type}/update`,
+    query: {id: item.id}
   })
 }
 

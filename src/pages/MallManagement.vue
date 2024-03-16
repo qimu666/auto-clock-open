@@ -59,7 +59,7 @@ const addMall = () => {
   router.push({path: '/add_mall'})
 }
 const update = (val) => {
-  router.push({path: '/mall_update', query: {id: val.id}})
+  router.push({path: '/update_mall', query: {id: val.id}})
 }
 const offline = async (val) => {
   const res = await ProductInfoControllerService.offlineProductInfoUsingPost({id: val.id})

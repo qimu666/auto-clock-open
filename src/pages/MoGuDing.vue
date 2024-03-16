@@ -418,7 +418,7 @@ const data = reactive({
 
 const changeAddress = async () => {
   if (data.clock.jobAddress) {
-    const res = await ClockInControllerService.getChangeClonkAddressInfoUsingPost(data.clock.jobAddress)
+    const res = await ClockInControllerService.getChangeClonkAddressInfoUsingPost(data.clock.jobAddress, "gxy")
     data.clock.clockAddress = res.data.clockAddress
     data.clock.latitude = res.data.latitude
     data.clock.longitude = res.data.longitude
@@ -480,7 +480,7 @@ const getClockInfo = async () => {
       forbidClick: true,
       message: '获取打卡信息中',
     });
-    const res = await ClockInControllerService.initClockInfoUsingPost(data.clock.phone, data.clock.password)
+    const res = await ClockInControllerService.initClockInfoUsingPost(data.clock.password, data.clock.phone, "", "gxy")
     if (res.data && res.code === 0) {
       setTimeout(() => {
         showSuccessToast("打卡信息获取成功")
@@ -488,7 +488,7 @@ const getClockInfo = async () => {
           ...data.clock,
           ...res.data
         }
-        doClockInfo.value=["1"]
+        doClockInfo.value = ["1"]
         data.loading = false
       }, 1500)
     } else {
@@ -542,7 +542,7 @@ const onSubmit = async () => {
     , clockDays: data.defaultClockInfo.clockDays,
     startTime: data.defaultClockInfo.startTime,
     endTime: data.defaultClockInfo.endTime,
-    type:'gxy',
+    type: 'gxy',
     reportSource: data.defaultClockInfo.reportSource,
     dailyNewspaperStatus: data.defaultClockInfo.startDayLyNewspaper ? 1 : 0,
     monthNewspaperStatus: data.defaultClockInfo.startMonthLyNewspaper ? 1 : 0,

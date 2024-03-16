@@ -3,6 +3,13 @@
     <van-form @submit="onSubmit">
       <van-cell-group inset>
         <van-field
+            v-model="data.basicInformations.websiteName"
+            name="网站名称"
+            label="网站名称"
+            placeholder="请填写网站名称"
+            :rules="[{ required: true, message: '请填写网站名称' }]"
+        />
+        <van-field
             v-model="data.basicInformations.noticeBar"
             name="滚动通知"
             label="滚动通知"

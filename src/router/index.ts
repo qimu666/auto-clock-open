@@ -37,9 +37,19 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../pages/MoGuDing.vue"),
     },
     {
-        path: "/update",
-        name: "修改信息",
+        path: "/zxjy",
+        name: "职校家园",
+        component: () => import("../pages/zxjy/ZXJY.vue"),
+    },
+    {
+        path: "/gxy/update",
+        name: "修改信息-工学云",
         component: () => import("../pages/UpdateMoGuDing.vue"),
+    },
+    {
+        path: "/zxjy/update",
+        name: "修改信息-职校家园",
+        component: () => import("../pages/zxjy/UpdateZXJY.vue"),
     },
     {
         path: "/system",
@@ -77,13 +87,13 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../pages/UpdatePlatform.vue"),
     },
     {
-        path: "/mall_update",
+        path: "/update_mall",
         name: "修改积分规格",
         component: () => import("../pages/UpdateMall.vue"),
     },
     {
         path: "/add_mall",
-        name: "修改积分规格",
+        name: "增加积分规格",
         component: () => import("../pages/AddMall.vue"),
     },
     {

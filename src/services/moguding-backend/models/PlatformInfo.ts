@@ -10,6 +10,7 @@ export type PlatformInfo = {
     id?: number;
     isDelete?: number;
     name?: string;
+    settleDown?: number;
     status?: number;
     timeType?: string;
     updateTime?: string;

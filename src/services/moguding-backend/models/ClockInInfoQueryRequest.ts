@@ -7,6 +7,7 @@ export type ClockInInfoQueryRequest = {
     clockAddress?: string;
     clockDays?: number;
     clockStatus?: number;
+    clockType?: string;
     clockedSuccessDays?: number;
     current?: number;
     dailyNewspaperStatus?: number;

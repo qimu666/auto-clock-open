@@ -19,8 +19,9 @@
         <van-field name="radio" label="平台类型：">
           <template #input>
             <van-radio-group v-model="data.clockType" direction="horizontal">
-              <van-radio name="gxy">工学云</van-radio>
+<!--              <van-radio name="gxy">工学云</van-radio>-->
               <br/>
+<!--              todo-->
               <van-radio name="zxjy">职校家园</van-radio>
               <br/>
               <van-radio name="qt">其他</van-radio>
@@ -28,7 +29,7 @@
           </template>
         </van-field>
         <van-field
-            v-if="data.clockType!=='gxy'"
+            v-if="data.clockType==='qt'"
             v-model="data.url"
             name="其他平台地址"
             label="其他平台地址"
@@ -39,7 +40,8 @@
             <van-radio-group v-model="data.timeType" direction="horizontal">
               <van-radio name="secondary">次</van-radio>
               <van-radio name="day">天</van-radio>
-              <van-radio name="permanent">永久</van-radio>
+              <br>
+              <van-radio name="permanent">一次结清</van-radio>
             </van-radio-group>
           </template>
         </van-field>
@@ -78,14 +80,16 @@ const data: stats = reactive({
   shopData: {},
   status: 1,
   timeType: 'secondary',
-  clockType: 'gxy',
+  // todo
+  clockType: 'zxjy',
+  // clockType: 'gxy',
   url: null
 })
 
 const addPlatForm = async () => {
   const res = await PlatformInfoControllerService.addPlatformInfoUsingPost({
     ...data.shopData,
-    clockType:data.clockType,
+    clockType: data.clockType,
     timeType: data.timeType,
     status: data.status,
     url: data.url

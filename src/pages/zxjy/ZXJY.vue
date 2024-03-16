@@ -5,16 +5,16 @@
         <van-field
             v-model="data.clock.phone"
             name="phone"
-            label="工学云账号："
-            placeholder="工学云账号"
-            :rules="[{ required: true, message: '请填写用户名' }]"
+            label="账号："
+            placeholder="职校家园账号"
+            :rules="[{ required: true, message: '请填写职校家园账号' }]"
         />
         <van-field
             v-model="data.clock.password"
             name="password"
-            label="工学云密码："
-            placeholder="工学云密码"
-            :rules="[{ required: true, message: '请填写密码' }]"
+            label="密码："
+            placeholder="职校家园密码"
+            :rules="[{ required: true, message: '请填写职校家园密码' }]"
         />
         <van-cell center title="一键获取账号信息">
           <template #right-icon>
@@ -33,7 +33,6 @@
                 v-model="data.clock.jobName"
                 name="jobName"
                 label="职位"
-                :rules="[{ required: true, message: '请填写职位' }]"
                 placeholder="请正确填写你的职位（将影响你的报告填写）"
             />
             <van-field
@@ -64,26 +63,31 @@
                 placeholder="纬度（根据公司地址自动生成）"
                 :rules="[{ required: true, message: '请填写纬度' }]"
             />
+            <van-field
+                v-model="data.clock.reportAddress"
+                name="reportAddress"
+                label="报告地址："
+                placeholder="实习报告地址留空默认为公司地址"
+            />
           </van-collapse-item>
         </van-collapse>
+        <van-field
+            v-model="data.defaultClockInfo.phoneType"
+            is-link
+            readonly
+            label="设备型号"
+            placeholder="设备型号"
+            @click="selectPhoneTypeShow = true"
+        />
         <van-field
             v-model="data.defaultClockInfo.startTime"
             is-link
             readonly
             name="startTime"
-            label="上班打卡："
-            placeholder="点击选择上班打卡时间"
+            label="打卡时间："
+            placeholder="点击选择打卡时间"
             @click="startTimeShow = true"
             :rules="[{ required: true, message: '请填写上班打卡时间' }]"
-        />
-        <van-field
-            v-model="data.defaultClockInfo.endTime"
-            is-link
-            readonly
-            name="endTime"
-            label="下班打卡："
-            placeholder="点击选择上班打卡时间"
-            @click="endTimeShow = true"
         />
         <van-field name="selectClockDay" label="打卡周期">
           <template #input>
@@ -110,20 +114,6 @@
             <van-stepper v-model="data.defaultClockInfo.clockDays"/>
           </template>
         </van-field>
-        <van-collapse v-model="getDevice">
-          <van-collapse-item title="获取设备信息（可选）" name="1">
-            <van-cell-group class="mx-4 text-sm">
-              连接地址：<a href="https://www.123pan.com/s/XrbBjv-ns0E3.html" target="_blank"
-                          class="text-blue-400">下载获取设备信息软件</a>
-            </van-cell-group>
-            <van-field
-                v-model="data.clock.device"
-                name="device"
-                label="设备信息："
-                placeholder="下载软件后复制填入"
-            />
-          </van-collapse-item>
-        </van-collapse>
         <van-collapse v-model="massagePush">
           <van-collapse-item title="消息推送（可选）" name="1">
             <van-field
@@ -184,7 +174,6 @@
               label="职位"
               readonly
               placeholder="职位"
-              :rules="[{ required: true, message: '请填写职位' }]"
           />
           <van-collapse-item v-if="data.defaultClockInfo.startDayLyNewspaper" title="日报" name="1">
             <van-field
@@ -192,7 +181,6 @@
                 name="dayTitle"
                 label="标题"
                 placeholder="标题"
-                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="data.report.dayReport.dayContent"
@@ -203,7 +191,6 @@
                 maxlength="1200"
                 show-word-limit
                 label="内容"
-                :rules="[{ required: true, message: '请填写内容' }]"
                 placeholder="内容"
             />
           </van-collapse-item>
@@ -213,7 +200,6 @@
                 name="weekTitle"
                 label="标题"
                 placeholder="标题"
-                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="data.report.weekReport.weekContent"
@@ -225,7 +211,6 @@
                 show-word-limit
                 label="内容"
                 placeholder="内容"
-                :rules="[{ required: true, message: '请填写内容' }]"
             />
           </van-collapse-item>
           <van-collapse-item v-if="data.defaultClockInfo.startMonthLyNewspaper" title="月报" name="3">
@@ -234,7 +219,6 @@
                 name="monthTitle"
                 label="标题"
                 placeholder="标题"
-                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="data.report.monthReport.monthContent"
@@ -244,7 +228,6 @@
                 rows="2"
                 maxlength="1200"
                 show-word-limit
-                :rules="[{ required: true, message: '请填写内容' }]"
                 label="内容"
                 placeholder="内容"
             />
@@ -259,28 +242,25 @@
       <van-popup v-model:show="startTimeShow" position="bottom">
         <van-time-picker
             v-model="data.defaultStartTime"
-            title="上班打卡时间："
+            title="打卡时间："
             @confirm="confirmStartTime"
             :columns-type="['hour', 'minute', 'second']"
-            min-time="08:00:00"
-            max-time="11:30:00"
+            min-time="00:05:00"
+            max-time="23:50:00"
             @cancel="startTimeShow = false"
         />
       </van-popup>
-      <van-popup v-model:show="endTimeShow" position="bottom">
-        <van-time-picker
-            v-model="data.defaultEndTime"
-            title="下班打卡时间："
-            @confirm="confirmEndTime"
-            :columns-type="['hour', 'minute', 'second']"
-            min-time="12:00:00"
-            max-time="23:30:00"
-            @cancel="endTimeShow = false"
+      <van-popup v-model:show="selectPhoneTypeShow" round position="bottom">
+        <van-picker
+            :columns="columns"
+            v-model="data.defaultStartTime"
+            @cancel="selectPhoneTypeShow = false"
+            @confirm="selectPhoneTypeConfirm"
         />
       </van-popup>
       <div style="margin: 16px;">
         <van-button round block type="primary" native-type="submit">
-          修改
+          添加
         </van-button>
       </div>
     </van-form>
@@ -289,10 +269,13 @@
 </template>
 
 <script setup lang="ts">
+
 import {reactive, ref, watchEffect} from "vue";
 import {showFailToast, showLoadingToast, showSuccessToast} from "vant";
 import {useRoute, useRouter} from "vue-router";
-import {ClockInControllerService, ClockInInfoControllerService} from "../services/moguding-backend";
+import {ClockInControllerService, ClockInInfoControllerService} from "../../services/moguding-backend";
+
+const selectedValues = ref(['Redmi|23049RAD8C|13']);
 
 const loading = ref(false);
 const finished = ref(false);
@@ -306,6 +289,8 @@ const router = useRouter();
 const route = useRoute();
 const show = ref(false);
 const startTimeShow = ref(false);
+const selectPhoneTypeShow = ref(false);
+
 const endTimeShow = ref(false);
 const showReportSourceByLibrary = ref(false);
 const showReportSourceByAi = ref(false);
@@ -337,7 +322,6 @@ const confirmEndTime = (val) => {
   data.defaultClockInfo.endTime = val.selectedValues.map((item) => item).join(':');
   endTimeShow.value = false
 }
-
 let backClock = []
 const groupCheckedA = (val) => {
   if (!val || val.length < 1) {
@@ -346,9 +330,6 @@ const groupCheckedA = (val) => {
     return
   }
   backClock = val
-}
-
-const selectReportType = (v) => {
 }
 
 const data = reactive({
@@ -365,6 +346,7 @@ const data = reactive({
   monthReportList: [],
   loading: false,
   clock: {
+    reportAddress: "",
     clockAddress: '',
     clockDays: '',
     dailyNewspaperStatus: 0,
@@ -409,6 +391,8 @@ const data = reactive({
   },
   getClockInfoStatus: false,
   defaultClockInfo: {
+    phoneType: "Redmi Note 12 Turbo",
+    phoneTypeValue: "Redmi|23049RAD8C|13",
     platformId: '',
     pushPushToken: '',
     email: '',
@@ -424,36 +408,37 @@ const data = reactive({
   }
 });
 
+const columns = [
+  {text: '小米10Pro', value: 'Xiaomi|Mi 10 Pro|11'},
+  {text: 'Redmi Note 12 Turbo', value: 'Redmi|23049RAD8C|13'},
+  {text: 'Oppo Reno10 Pro', value: 'OPPO|PHV110|12'},
+  {text: '华为P8max', value: 'HUAWEI|DAV-703L|12'},
+  {text: 'vivo NEX双屏版', value: 'Vivo|V1821A|13'},
+  {text: '小米13', value: 'Xiaomi|M1803E1A|13'},
+];
+const selectPhoneTypeConfirm = ({selectedOptions}) => {
+  selectPhoneTypeShow.value = false;
+  data.defaultClockInfo.phoneType = selectedOptions[0].text;
+  data.defaultClockInfo.phoneTypeValue = selectedOptions[0].value;
+};
+
 const changeAddress = async () => {
   if (data.clock.jobAddress) {
-    const res = await ClockInControllerService.getChangeClonkAddressInfoUsingPost(data.clock.jobAddress, "gxy")
+    const res = await ClockInControllerService.getChangeClonkAddressInfoUsingPost(data.clock.jobAddress, "zxjy")
     data.clock.clockAddress = res.data.clockAddress
     data.clock.latitude = res.data.latitude
     data.clock.longitude = res.data.longitude
   }
 }
 
-watchEffect(async () => {
+watchEffect(() => {
   const {id} = route.query
   if (!id) {
-    showFailToast("打卡信息不存在")
+    showFailToast("平台不存在")
     return
   }
-  const res = await ClockInInfoControllerService.getClockInInfoByIdUsingGet(id)
-  if (res.data && res.code === 0) {
-    data.clock = res.data
-    data.defaultClockInfo.startDayLyNewspaper = res.data.dailyNewspaperStatus != 0 && res.data.dailyNewspaperStatus != 3
-    data.defaultClockInfo.startWeekLyNewspaper = res.data.weekNewspaperStatus != 0 && res.data.weekNewspaperStatus != 3
-    data.defaultClockInfo.startMonthLyNewspaper = res.data.monthNewspaperStatus != 0 && res.data.monthNewspaperStatus != 3
-    data.defaultClockInfo.reportSource = res.data.reportSource
-    data.report = res.data.report
-    data.defaultClockInfo.selectClockDay = JSON.parse(res.data.selectClockDay)
-    data.defaultClockInfo.startTime = res.data.startTime
-    data.defaultClockInfo.endTime = res.data.endTime
-    data.defaultClockInfo.clockDays = res.data.clockDays
-
-  }
-})
+  data.clock.platformId = id as string
+});
 
 const getReportSourceByLibrary = () => {
   if (!data.defaultClockInfo.startDayLyNewspaper && !data.defaultClockInfo.startWeekLyNewspaper && !data.defaultClockInfo.startMonthLyNewspaper) {
@@ -463,10 +448,10 @@ const getReportSourceByLibrary = () => {
   showReportSourceByLibrary.value = true
 }
 const getReportSourceByAi = () => {
-  // if (!data.defaultClockInfo.startDayLyNewspaper && !data.defaultClockInfo.startWeekLyNewspaper && !data.defaultClockInfo.startMonthLyNewspaper) {
-  //   showFailToast("请先开启任意报告")
-  //   return
-  // }
+  if (!data.defaultClockInfo.startDayLyNewspaper && !data.defaultClockInfo.startWeekLyNewspaper && !data.defaultClockInfo.startMonthLyNewspaper) {
+    showFailToast("请先开启任意报告")
+    return
+  }
   showReportSourceByAi.value = true
 }
 
@@ -501,7 +486,7 @@ const getClockInfo = async () => {
       forbidClick: true,
       message: '获取打卡信息中',
     });
-    const res = await ClockInControllerService.initClockInfoUsingPost(data.clock.password, data.clock.phone, "", "gxy")
+    const res = await ClockInControllerService.initClockInfoUsingPost(data.clock.password, data.clock.phone, data.defaultClockInfo.phoneTypeValue, "zxjy")
     if (res.data && res.code === 0) {
       setTimeout(() => {
         showSuccessToast("打卡信息获取成功")
@@ -509,7 +494,7 @@ const getClockInfo = async () => {
           ...data.clock,
           ...res.data
         }
-        doClockInfo.value=["1"]
+        doClockInfo.value = ["1"]
         data.loading = false
       }, 1500)
     } else {
@@ -520,17 +505,11 @@ const getClockInfo = async () => {
 }
 
 
-const onSubmit = async (values) => {
+const onSubmit = async () => {
   if (!data.clock.jobAddress || !data.clock.phone || !data.clock.clockAddress
       || !data.clock.password || !data.clock.latitude || !data.clock.longitude || !data.clock.jobName) {
     showFailToast("基础信息未填写")
     return
-  }
-  if (data.defaultClockInfo.startMonthLyNewspaper || data.defaultClockInfo.startWeekLyNewspaper || data.defaultClockInfo.startDayLyNewspaper) {
-    if (data.defaultClockInfo.reportSource === 0) {
-      showFailToast("开启报告后，请选择报告来源")
-      return
-    }
   }
   if (data.defaultClockInfo.reportSource === 3) {
     if (data.defaultClockInfo.startDayLyNewspaper) {
@@ -552,17 +531,24 @@ const onSubmit = async (values) => {
       }
     }
   }
+  if (data.defaultClockInfo.startMonthLyNewspaper || data.defaultClockInfo.startWeekLyNewspaper || data.defaultClockInfo.startDayLyNewspaper) {
+    if (data.defaultClockInfo.reportSource === 0) {
+      showFailToast("开启报告后，请选择报告来源")
+      return
+    }
+  }
 
   showLoadingToast({
     duration: 0,
     forbidClick: true,
-    message: '修改打卡信息中',
+    message: '添加打卡信息中',
   });
-  const res = await ClockInInfoControllerService.updateClockInInfoUsingPost({
+  const res = await ClockInInfoControllerService.addClockInInfoUsingPost({
     ...data.clock
     , clockDays: data.defaultClockInfo.clockDays,
     startTime: data.defaultClockInfo.startTime,
-    endTime: data.defaultClockInfo.endTime,
+    type: 'zxjy',
+    phoneType: data.defaultClockInfo.phoneTypeValue,
     reportSource: data.defaultClockInfo.reportSource,
     dailyNewspaperStatus: data.defaultClockInfo.startDayLyNewspaper ? 1 : 0,
     monthNewspaperStatus: data.defaultClockInfo.startMonthLyNewspaper ? 1 : 0,
@@ -572,9 +558,11 @@ const onSubmit = async (values) => {
   })
   if (res.data && res.code === 0) {
     setTimeout(() => {
-      showSuccessToast("打卡信息修改成功")
+      showSuccessToast("打卡信息添加成功")
+      router.push('/clockInfo?clockType=zxjy&tagType=all')
     }, 1500)
   }
+  // showFailToast(JSON.stringify(values));
 };
 
 </script>

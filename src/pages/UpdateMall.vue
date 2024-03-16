@@ -56,6 +56,7 @@ interface State {
 const data: State = reactive({coinData: {}, status: 1})
 
 onMounted(async () => {
+  console.log(1)
   const {id} = route.query
   if (!id) {
     showFailToast("积分规格不存在")
@@ -69,7 +70,7 @@ onMounted(async () => {
 })
 
 const updateMall = async () => {
-  const res = await ProductInfoControllerService.updatePlatformInfoUsingPost({...data.coinData, status: data.status})
+  const res = await ProductInfoControllerService.updateProductInfoUsingPost({...data.coinData, status: data.status})
   if (res.data && res.code === 0) {
     showSuccessToast("更新成功")
   }
