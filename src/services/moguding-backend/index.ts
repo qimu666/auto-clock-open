@@ -75,6 +75,7 @@ export type { ProductInfoQueryRequest } from './models/ProductInfoQueryRequest';
 export type { ProductInfoUpdateRequest } from './models/ProductInfoUpdateRequest';
 export type { Report } from './models/Report';
 export type { SupplementaryReportRequest } from './models/SupplementaryReportRequest';
+export type { TransferCoinRequest } from './models/TransferCoinRequest';
 export type { User } from './models/User';
 export type { UserAddRequest } from './models/UserAddRequest';
 export type { UserBindEmailRequest } from './models/UserBindEmailRequest';

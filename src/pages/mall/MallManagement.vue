@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import {onMounted, reactive} from "vue";
-import {ProductInfoControllerService} from "../services/moguding-backend";
+import {ProductInfoControllerService} from "../../services/moguding-backend";
 import {useRouter} from "vue-router";
 import {showConfirmDialog, showSuccessToast} from "vant";
 

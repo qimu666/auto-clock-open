@@ -19,9 +19,8 @@
         <van-field name="radio" label="平台类型：">
           <template #input>
             <van-radio-group v-model="data.clockType" direction="horizontal">
-<!--              <van-radio name="gxy">工学云</van-radio>-->
+              <van-radio name="gxy">工学云</van-radio>
               <br/>
-<!--              todo-->
               <van-radio name="zxjy">职校家园</van-radio>
               <br/>
               <van-radio name="qt">其他</van-radio>
@@ -65,7 +64,7 @@
 
 <script setup lang="ts">
 import {reactive} from "vue";
-import {PlatformInfo, PlatformInfoControllerService} from "../services/moguding-backend";
+import {PlatformInfo, PlatformInfoControllerService} from "../../../services/moguding-backend";
 import {showSuccessToast} from "vant";
 
 interface stats {
@@ -80,9 +79,7 @@ const data: stats = reactive({
   shopData: {},
   status: 1,
   timeType: 'secondary',
-  // todo
-  clockType: 'zxjy',
-  // clockType: 'gxy',
+  clockType: 'gxy',
   url: null
 })
 

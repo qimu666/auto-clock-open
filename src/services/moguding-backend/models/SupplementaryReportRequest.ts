@@ -6,6 +6,8 @@
 export type SupplementaryReportRequest = {
     endTime?: string;
     id?: string;
+    platformType?: string;
+    reportAddress?: string;
     startTime?: string;
     type?: string;
 };

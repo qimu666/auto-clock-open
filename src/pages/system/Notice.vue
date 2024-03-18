@@ -64,9 +64,9 @@
 
 <script setup lang="ts">
 import {onMounted, reactive, ref} from "vue";
-import {BasicInformation, BasicInformationControllerService} from "../services/moguding-backend";
+import {BasicInformation, BasicInformationControllerService} from "../../services/moguding-backend";
 import {showSuccessToast} from "vant";
-import {useDialogStore} from "../stores/dialogRead";
+import {useDialogStore} from "../../stores/dialogRead";
 const dialogStore = useDialogStore();
 interface State {
   basicInformations:BasicInformation

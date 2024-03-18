@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import {reactive, ref} from "vue";
-import {CoinDetailControllerService, DailyCheckIn} from "../services/moguding-backend";
+import {CoinDetailControllerService, DailyCheckIn} from "../../services/moguding-backend";
 import {useRoute} from "vue-router";
 
 const route = useRoute();
@@ -45,6 +45,9 @@ const foramDate = (val) => {
 
 }
 const getTitle = (item) => {
+  if (item.type === 'reduceCoinAdd') {
+    return foramDate(item.createTime) + '  ' + item.description + ' + ' + item.coinNum
+  }
   if (item.type !== 'reduceCoin' && item.type !== 'recharge') {
     return foramDate(item.createTime) + '  ' + item.nikeName + ' ' + item.description + ' - ' + item.coinNum
   } else {

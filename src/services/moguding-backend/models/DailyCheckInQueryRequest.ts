@@ -13,6 +13,7 @@ export type DailyCheckInQueryRequest = {
     sortField?: string;
     sortOrder?: string;
     status?: number;
+    type?: string;
     updateTime?: string;
     userId?: number;
 };

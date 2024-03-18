@@ -11,4 +11,5 @@ export type BasicInformationUpdateRequest = {
     noticeAnnouncementTitle?: string;
     noticeBar?: string;
     pointsNotification?: string;
+    websiteName?: string;
 };

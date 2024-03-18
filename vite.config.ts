@@ -18,9 +18,10 @@ export default defineConfig({
                 const print = server.printUrls;
                 server.printUrls = () => {
                     console.info(colors.red(`  ➜  代码出处信息`))
-                    console.info(colors.red(`  ➜  By：qimu`))
-                    console.info(colors.red(`  ➜  Wx：aqimu66`))
-                    console.info(colors.red(`  ➜  Github：https://github.com/qimu666/Auto-Clock`))
+                    console.info(colors.red(`  ➜  作者By：qimu`))
+                    console.info(colors.red(`  ➜  作者Wx：aqimu66`))
+                    console.info(colors.red(`  ➜  Github主页：https://github.com/qimu666`))
+                    console.info(colors.red(`  ➜  项目Github：https://github.com/qimu666/Auto-Clock`))
                     console.info(colors.green(``))
                     print();
                 }

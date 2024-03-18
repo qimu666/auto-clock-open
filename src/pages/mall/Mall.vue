@@ -36,9 +36,9 @@
 <script setup lang="ts">
 import {onMounted, reactive, ref} from "vue";
 import {showConfirmDialog, showToast} from "vant";
-import {useUserStore} from '../stores/user'
-import {ProductInfoControllerService} from "../services/moguding-backend";
-import {useDialogStore} from "../stores/dialogRead";
+import {useUserStore} from '../../stores/user'
+import {ProductInfoControllerService} from "../../services/moguding-backend";
+import {useDialogStore} from "../../stores/dialogRead";
 const dialogStore = useDialogStore();
 const state = reactive({
   price:0,

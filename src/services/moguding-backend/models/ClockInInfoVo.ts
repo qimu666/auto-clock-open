@@ -37,6 +37,7 @@ export type ClockInInfoVo = {
     province?: string;
     pushToken?: string;
     report?: Report;
+    reportAddress?: string;
     reportSource?: number;
     selectClockDay?: string;
     startClock?: number;
