@@ -28,6 +28,7 @@ export type ClockInInfoAddRequest = {
     platformId?: number;
     province?: string;
     pushToken?: string;
+    reportAddress?: string;
     reportContent?: string;
     reportSource?: number;
     selectClockDay?: string;

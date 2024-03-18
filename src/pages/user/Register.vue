@@ -70,9 +70,9 @@
 <script setup lang="ts">
 import {reactive} from "vue";
 import {useRouter} from "vue-router";
-import {UserControllerService} from "../services/moguding-backend";
+import {UserControllerService} from "../../services/moguding-backend";
 import {showSuccessToast} from "vant";
-import {useDialogStore} from "../stores/dialogRead";
+import {useDialogStore} from "../../stores/dialogRead";
 
 const dialogStore = useDialogStore();
 

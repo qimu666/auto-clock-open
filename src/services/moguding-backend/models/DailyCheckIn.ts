@@ -9,6 +9,7 @@ export type DailyCheckIn = {
     id?: number;
     phone?: string;
     status?: number;
+    type?: string;
     updateTime?: string;
     userId?: number;
 };

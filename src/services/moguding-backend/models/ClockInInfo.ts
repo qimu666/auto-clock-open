@@ -35,6 +35,7 @@ export type ClockInInfo = {
     platformId?: number;
     province?: string;
     pushToken?: string;
+    reportAddress?: string;
     reportSource?: number;
     selectClockDay?: string;
     startClock?: number;

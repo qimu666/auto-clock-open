@@ -57,8 +57,8 @@
 import {reactive} from "vue";
 import {useRouter} from "vue-router";
 import {showSuccessToast} from "vant";
-import {useUserStore} from "../stores/user";
-import {useDialogStore} from "../stores/dialogRead";
+import {useUserStore} from "../../stores/user";
+import {useDialogStore} from "../../stores/dialogRead";
 
 const dialogStore = useDialogStore();
 

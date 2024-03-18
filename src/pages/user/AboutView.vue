@@ -65,6 +65,18 @@
           </div>
         </template>
       </van-cell>
+      <van-cell v-else @click="router.push('/transferCoin')" is-link>
+        <template #title>
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="w-5 h-5 stroke-1">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 7.5l3 4.5m0 0l3-4.5M12 12v5.25M15 12H9m6 3H9m12-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="custom-title">&nbsp;积分转账</span>
+          </div>
+        </template>
+      </van-cell>
       <van-cell is-link v-if="loginUser.userRole==='admin'" @click="router.push('/system')">
         <template #title>
           <div class="flex items-center">
@@ -94,7 +106,7 @@
           @load="onLoad"
       >
         <van-cell-group>
-           <van-cell v-for="item in data.record" :title="getTitle(item)"/>
+          <van-cell v-for="item in data.record" :title="getTitle(item)"/>
         </van-cell-group>
       </van-list>
     </div>
@@ -104,8 +116,8 @@
 
 <script setup lang="ts">
 import {useRoute, useRouter} from "vue-router";
-import {useUserStore} from '../stores/user'
-import {CoinDetailControllerService, DailyCheckIn, UserControllerService} from "../services/moguding-backend";
+import {useUserStore} from '../../stores/user'
+import {CoinDetailControllerService, DailyCheckIn, UserControllerService} from "../../services/moguding-backend";
 import {reactive, ref} from "vue";
 
 const router = useRouter();
@@ -140,6 +152,9 @@ const foramDate = (val) => {
 
 }
 const getTitle = (item) => {
+  if (item.type === 'reduceCoinAdd') {
+    return foramDate(item.createTime) + '  ' + item.description + ' + ' + item.coinNum
+  }
   if (item.type !== 'reduceCoin' && item.type !== 'recharge') {
     return foramDate(item.createTime) + '  ' + item.nikeName + ' ' + item.description + ' - ' + item.coinNum
   } else {

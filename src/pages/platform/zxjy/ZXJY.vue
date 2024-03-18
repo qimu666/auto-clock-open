@@ -33,14 +33,13 @@
                 v-model="data.clock.jobName"
                 name="jobName"
                 label="职位"
-                :rules="[{ required: true, message: '请填写职位' }]"
                 placeholder="请正确填写你的职位（将影响你的报告填写）"
             />
             <van-field
                 v-model="data.clock.jobAddress"
                 name="jobAddress"
                 label="公司地址："
-                @change="changeAddress"
+                @change="changeJobAddress"
                 placeholder="自动获取公司地址或者自定义地址"
                 :rules="[{ required: true, message: '请填写公司地址' }]"
             />
@@ -48,12 +47,14 @@
                 v-model="data.clock.clockAddress"
                 name="clockAddress"
                 label="打卡地址："
-                placeholder="省 · 市 · 区 · 在xxx附近"
-                :rules="[{ required: true, message: '请填写打卡地址' }]"
+                @change="changeClockAddress"
+                placeholder="根据公司地址自动格式化"
+                :rules="[{ required: true, message: '请变更公司地址' }]"
             />
             <van-field
                 v-model="data.clock.longitude"
                 label="经度："
+                readonly
                 placeholder="经度（根据公司地址自动生成）"
                 :rules="[{ required: true, message: '请填写经度' }]"
             />
@@ -61,14 +62,9 @@
                 v-model="data.clock.latitude"
                 name="latitude"
                 label="纬度："
+                readonly
                 placeholder="纬度（根据公司地址自动生成）"
                 :rules="[{ required: true, message: '请填写纬度' }]"
-            />
-            <van-field
-                v-model="data.clock.device"
-                name="device"
-                label="设备信息："
-                placeholder="设备信息"
             />
             <van-field
                 v-model="data.clock.reportAddress"
@@ -121,7 +117,6 @@
             <van-stepper v-model="data.defaultClockInfo.clockDays"/>
           </template>
         </van-field>
-
         <van-collapse v-model="massagePush">
           <van-collapse-item title="消息推送（可选）" name="1">
             <van-field
@@ -182,7 +177,6 @@
               label="职位"
               readonly
               placeholder="职位"
-              :rules="[{ required: true, message: '请填写职位' }]"
           />
           <van-collapse-item v-if="data.defaultClockInfo.startDayLyNewspaper" title="日报" name="1">
             <van-field
@@ -190,7 +184,6 @@
                 name="dayTitle"
                 label="标题"
                 placeholder="标题"
-                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="data.report.dayReport.dayContent"
@@ -201,7 +194,6 @@
                 maxlength="1200"
                 show-word-limit
                 label="内容"
-                :rules="[{ required: true, message: '请填写内容' }]"
                 placeholder="内容"
             />
           </van-collapse-item>
@@ -211,7 +203,6 @@
                 name="weekTitle"
                 label="标题"
                 placeholder="标题"
-                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="data.report.weekReport.weekContent"
@@ -223,7 +214,6 @@
                 show-word-limit
                 label="内容"
                 placeholder="内容"
-                :rules="[{ required: true, message: '请填写内容' }]"
             />
           </van-collapse-item>
           <van-collapse-item v-if="data.defaultClockInfo.startMonthLyNewspaper" title="月报" name="3">
@@ -232,7 +222,6 @@
                 name="monthTitle"
                 label="标题"
                 placeholder="标题"
-                :rules="[{ required: true, message: '请填写标题' }]"
             />
             <van-field
                 v-model="data.report.monthReport.monthContent"
@@ -242,7 +231,6 @@
                 rows="2"
                 maxlength="1200"
                 show-word-limit
-                :rules="[{ required: true, message: '请填写内容' }]"
                 label="内容"
                 placeholder="内容"
             />
@@ -267,16 +255,15 @@
       </van-popup>
       <van-popup v-model:show="selectPhoneTypeShow" round position="bottom">
         <van-picker
-            v-model="selectedValues"
             :columns="columns"
+            v-model="data.defaultStartTime"
             @cancel="selectPhoneTypeShow = false"
             @confirm="selectPhoneTypeConfirm"
         />
       </van-popup>
-
       <div style="margin: 16px;">
         <van-button round block type="primary" native-type="submit">
-          修改
+          添加
         </van-button>
       </div>
     </van-form>
@@ -285,12 +272,14 @@
 </template>
 
 <script setup lang="ts">
+
 import {reactive, ref, watchEffect} from "vue";
 import {showFailToast, showLoadingToast, showSuccessToast} from "vant";
 import {useRoute, useRouter} from "vue-router";
-import {ClockInControllerService, ClockInInfoControllerService} from "../../services/moguding-backend";
+import {ClockInControllerService, ClockInInfoControllerService} from "../../../services/moguding-backend";
 
 const selectedValues = ref(['Redmi|23049RAD8C|13']);
+
 const loading = ref(false);
 const finished = ref(false);
 const reportLibrary = ref([]);
@@ -299,12 +288,12 @@ const reportYour = ref([]);
 const doClockInfo = ref([]);
 const getDevice = ref([]);
 const massagePush = ref([]);
-const selectPhoneTypeShow = ref(false);
-
 const router = useRouter();
 const route = useRoute();
 const show = ref(false);
 const startTimeShow = ref(false);
+const selectPhoneTypeShow = ref(false);
+
 const endTimeShow = ref(false);
 const showReportSourceByLibrary = ref(false);
 const showReportSourceByAi = ref(false);
@@ -336,7 +325,6 @@ const confirmEndTime = (val) => {
   data.defaultClockInfo.endTime = val.selectedValues.map((item) => item).join(':');
   endTimeShow.value = false
 }
-
 let backClock = []
 const groupCheckedA = (val) => {
   if (!val || val.length < 1) {
@@ -345,9 +333,6 @@ const groupCheckedA = (val) => {
     return
   }
   backClock = val
-}
-
-const selectReportType = (v) => {
 }
 
 const data = reactive({
@@ -364,13 +349,13 @@ const data = reactive({
   monthReportList: [],
   loading: false,
   clock: {
+    reportAddress: "",
     clockAddress: '',
     clockDays: '',
     dailyNewspaperStatus: 0,
     device: '',
     email: '',
     endTime: '',
-    reportAddress: '',
     jobName: '',
     jobAddress: '',
     monthNewspaperStatus: 0,
@@ -425,6 +410,7 @@ const data = reactive({
     selectClockDay: ['7', '1', "2", "3", "4", "5", "6"],
   }
 });
+
 const columns = [
   {text: '小米10Pro', value: 'Xiaomi|Mi 10 Pro|11'},
   {text: 'Redmi Note 12 Turbo', value: 'Redmi|23049RAD8C|13'},
@@ -439,7 +425,7 @@ const selectPhoneTypeConfirm = ({selectedOptions}) => {
   data.defaultClockInfo.phoneTypeValue = selectedOptions[0].value;
 };
 
-const changeAddress = async () => {
+const changeJobAddress = async () => {
   if (data.clock.jobAddress) {
     const res = await ClockInControllerService.getChangeClonkAddressInfoUsingPost(data.clock.jobAddress, "zxjy")
     data.clock.clockAddress = res.data.clockAddress
@@ -448,29 +434,24 @@ const changeAddress = async () => {
   }
 }
 
-watchEffect(async () => {
+const changeClockAddress = async () => {
+  if (data.clock.clockAddress) {
+    const res = await ClockInControllerService.getChangeClonkAddressInfoUsingPost(data.clock.clockAddress, "zxjy")
+    data.clock.clockAddress = res.data.clockAddress
+    data.clock.latitude = res.data.latitude
+    data.clock.longitude = res.data.longitude
+  }
+}
+
+
+watchEffect(() => {
   const {id} = route.query
   if (!id) {
-    showFailToast("打卡信息不存在")
+    showFailToast("平台不存在")
     return
   }
-  const res = await ClockInInfoControllerService.getClockInInfoByIdUsingGet(id)
-  if (res.data && res.code === 0) {
-    data.clock = res.data
-    data.defaultClockInfo.startDayLyNewspaper = res.data.dailyNewspaperStatus != 0 && res.data.dailyNewspaperStatus != 3
-    data.defaultClockInfo.startWeekLyNewspaper = res.data.weekNewspaperStatus != 0 && res.data.weekNewspaperStatus != 3
-    data.defaultClockInfo.startMonthLyNewspaper = res.data.monthNewspaperStatus != 0 && res.data.monthNewspaperStatus != 3
-    data.defaultClockInfo.reportSource = res.data.reportSource
-    data.report = res.data.report
-    data.defaultClockInfo.selectClockDay = JSON.parse(res.data.selectClockDay)
-    data.defaultClockInfo.startTime = res.data.startTime
-    data.defaultClockInfo.endTime = res.data.endTime
-    data.defaultClockInfo.clockDays = res.data.clockDays
-    data.defaultClockInfo.phoneType = columns.find(item => item.value === res.data.phoneType)?.text
-    data.defaultClockInfo.phoneTypeValue = res.data.phoneType
-    selectedValues.value = [`${res.data.phoneType}`]
-  }
-})
+  data.clock.platformId = id as string
+});
 
 const getReportSourceByLibrary = () => {
   if (!data.defaultClockInfo.startDayLyNewspaper && !data.defaultClockInfo.startWeekLyNewspaper && !data.defaultClockInfo.startMonthLyNewspaper) {
@@ -480,10 +461,10 @@ const getReportSourceByLibrary = () => {
   showReportSourceByLibrary.value = true
 }
 const getReportSourceByAi = () => {
-  // if (!data.defaultClockInfo.startDayLyNewspaper && !data.defaultClockInfo.startWeekLyNewspaper && !data.defaultClockInfo.startMonthLyNewspaper) {
-  //   showFailToast("请先开启任意报告")
-  //   return
-  // }
+  if (!data.defaultClockInfo.startDayLyNewspaper && !data.defaultClockInfo.startWeekLyNewspaper && !data.defaultClockInfo.startMonthLyNewspaper) {
+    showFailToast("请先开启任意报告")
+    return
+  }
   showReportSourceByAi.value = true
 }
 
@@ -537,17 +518,11 @@ const getClockInfo = async () => {
 }
 
 
-const onSubmit = async (values) => {
+const onSubmit = async () => {
   if (!data.clock.jobAddress || !data.clock.phone || !data.clock.clockAddress
       || !data.clock.password || !data.clock.latitude || !data.clock.longitude || !data.clock.jobName) {
     showFailToast("基础信息未填写")
     return
-  }
-  if (data.defaultClockInfo.startMonthLyNewspaper || data.defaultClockInfo.startWeekLyNewspaper || data.defaultClockInfo.startDayLyNewspaper) {
-    if (data.defaultClockInfo.reportSource === 0) {
-      showFailToast("开启报告后，请选择报告来源")
-      return
-    }
   }
   if (data.defaultClockInfo.reportSource === 3) {
     if (data.defaultClockInfo.startDayLyNewspaper) {
@@ -569,16 +544,23 @@ const onSubmit = async (values) => {
       }
     }
   }
+  if (data.defaultClockInfo.startMonthLyNewspaper || data.defaultClockInfo.startWeekLyNewspaper || data.defaultClockInfo.startDayLyNewspaper) {
+    if (data.defaultClockInfo.reportSource === 0) {
+      showFailToast("开启报告后，请选择报告来源")
+      return
+    }
+  }
 
   showLoadingToast({
     duration: 0,
     forbidClick: true,
-    message: '修改打卡信息中',
+    message: '添加打卡信息中',
   });
-  const res = await ClockInInfoControllerService.updateClockInInfoUsingPost({
+  const res = await ClockInInfoControllerService.addClockInInfoUsingPost({
     ...data.clock
     , clockDays: data.defaultClockInfo.clockDays,
     startTime: data.defaultClockInfo.startTime,
+    type: 'zxjy',
     phoneType: data.defaultClockInfo.phoneTypeValue,
     reportSource: data.defaultClockInfo.reportSource,
     dailyNewspaperStatus: data.defaultClockInfo.startDayLyNewspaper ? 1 : 0,
@@ -589,9 +571,11 @@ const onSubmit = async (values) => {
   })
   if (res.data && res.code === 0) {
     setTimeout(() => {
-      showSuccessToast("打卡信息修改成功")
+      showSuccessToast("打卡信息添加成功")
+      router.push('/clockInfo?clockType=zxjy&tagType=all')
     }, 1500)
   }
+  // showFailToast(JSON.stringify(values));
 };
 
 </script>

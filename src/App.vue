@@ -16,9 +16,10 @@
         />
         <van-notice-bar v-if="path==='/500'" scrollable
                         text="服务器异常请联系管理员" mode="closeable"/>
-        <van-notice-bar v-else-if="route.path!=='/mall_management' && dialogStore.basicInformations.noticeBar" scrollable
+        <van-notice-bar v-else-if="route.path !=='/mall_management' && dialogStore.basicInformations.noticeBar"
+                        scrollable
                         :text="dialogStore.basicInformations.noticeBar" mode="closeable"/>
-        <van-notice-bar v-else scrollable text="左划可编辑" mode="closeable"/>
+        <van-notice-bar v-else-if="route.path==='/mall_management'" scrollable text="左划可编辑" mode="closeable"/>
       </div>
       <van-loading v-if="b" class="flex h-screen justify-center items-center" color="#0094ff" vertical>加载中...
       </van-loading>
@@ -62,8 +63,8 @@ import {BasicInformationControllerService} from "./services/moguding-backend";
 const {getLoginUser, loginUser} = useUserStore();
 const dialogStore = useDialogStore();
 const WHITE_LIST = ['/login', '/register']
-let path=window.location.pathname
-const writeList=[...WHITE_LIST,'/500']
+let path = window.location.pathname
+const writeList = [...WHITE_LIST, '/500']
 
 const route = useRoute();
 const basicInformation = ref({})
@@ -97,7 +98,7 @@ const onClickLeft = () => {
   return history.back()
 };
 onMounted(async () => {
-  if (window.location.pathname==='/') {
+  if (window.location.pathname !== '/500') {
     const res = await BasicInformationControllerService.getBasicInformationByIdUsingGet(1)
     if (res.code === 0 && res.data) {
       basicInformation.value = res.data

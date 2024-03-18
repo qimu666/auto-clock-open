@@ -440,9 +440,7 @@ const data = reactive({
   initReportNum: 1,
   initHistoricalPageNum: 1,
   tagActiveType: 'all',
-  // todo
-  clockTypeActiveIndex: 'zxjy',
-  // clockTypeActiveIndex: 'gxy',
+  clockTypeActiveIndex: 'gxy',
   historicalList: [],
   clockList: [],
   backupList: [],
@@ -507,11 +505,11 @@ const data = reactive({
     },
   ],
   clockTypeList: [
-    // {
-    //   id: '2',
-    //   tagName: '工学云',
-    //   type: 'gxy'
-    // },
+    {
+      id: '2',
+      tagName: '工学云',
+      type: 'gxy'
+    },
     {
       id: '3',
       tagName: '职校家园',

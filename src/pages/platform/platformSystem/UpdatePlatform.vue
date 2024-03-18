@@ -19,9 +19,8 @@
         <van-field name="radio" label="平台类型：">
           <template #input>
             <van-radio-group v-model="data.clockType" direction="horizontal">
-<!--              <van-radio name="gxy">工学云</van-radio>-->
+              <van-radio name="gxy">工学云</van-radio>
               <br/>
-<!--              todo-->
               <van-radio name="zxjy">职校家园</van-radio>
               <br/>
               <van-radio name="qt">其他</van-radio>
@@ -68,7 +67,7 @@ import {
   PlatformInfoControllerService,
   ProductInfo,
   ProductInfoControllerService
-} from "../services/moguding-backend";
+} from "../../../services/moguding-backend";
 import {showFailToast, showSuccessToast} from "vant";
 import {useRoute} from "vue-router";
 
@@ -86,9 +85,7 @@ const data: stats = reactive({
   shopData: {},
   status: 1,
   timeType: 'secondary',
-  // todo
-  clockType: 'zxjy',
-  // clockType: 'gxy',
+  clockType: 'gxy',
   url: null
 })
 
@@ -117,7 +114,7 @@ const updatePlatForm = async () => {
     timeType: data.timeType,
     status: data.status,
     url: data.url
-})
+  })
   if (res.data && res.code === 0) {
     showSuccessToast("更新成功")
   }

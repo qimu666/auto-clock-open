@@ -9,6 +9,7 @@ import type { BaseResponse_Page_UserVO_ } from '../models/BaseResponse_Page_User
 import type { BaseResponse_User_ } from '../models/BaseResponse_User_';
 import type { BaseResponse_UserVO_ } from '../models/BaseResponse_UserVO_';
 import type { DeleteRequest } from '../models/DeleteRequest';
+import type { TransferCoinRequest } from '../models/TransferCoinRequest';
 import type { UserAddRequest } from '../models/UserAddRequest';
 import type { UserBindEmailRequest } from '../models/UserBindEmailRequest';
 import type { UserLoginRequest } from '../models/UserLoginRequest';
@@ -395,6 +396,29 @@ requestBody?: UserRegisterRequest,
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/user/register',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * transferCoin
+     * @param requestBody 
+     * @returns BaseResponse_UserVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static transferCoinUsingPost(
+requestBody?: TransferCoinRequest,
+): CancelablePromise<BaseResponse_UserVO_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/user/transferCoin',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

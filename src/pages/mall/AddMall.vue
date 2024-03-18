@@ -44,7 +44,7 @@
 <script setup lang="ts">
 
 import {reactive} from "vue";
-import {ProductInfo, ProductInfoControllerService} from "../services/moguding-backend";
+import {ProductInfo, ProductInfoControllerService} from "../../services/moguding-backend";
 import {showSuccessToast} from "vant";
 
 interface State {

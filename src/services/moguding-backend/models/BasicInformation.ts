@@ -11,4 +11,5 @@ export type BasicInformation = {
     noticeAnnouncementTitle?: string;
     noticeBar?: string;
     pointsNotification?: string;
+    websiteName?: string;
 };

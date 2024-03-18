@@ -15,7 +15,7 @@
 
 ### 联系作者：aqimu66
 
-<img src="doc/qrcode/wx.jpg" alt="aqimu66" width=180/> 
+<img src="https://img.qimuu.icu/typory/wx.jpg" alt="aqimu66" width=180/> 
 
 ### 告知 ⚠️
 
@@ -134,9 +134,9 @@ yarn build or npm run build
 
 谢谢！ :heart:
 
-|                           微信赞赏                            |                               支付宝                               |
-|:---------------------------------------------------------:|:---------------------------------------------------------------:|
-| <img src="doc/qrcode/wxzs.jpg" alt="Wechat QRcode" width=180/> |  <img src="doc/qrcode/zfb.jpg" alt="Alipay QRcode" width=180/>  |
+|                           微信赞赏                            |                                       支付宝                                       |
+|:---------------------------------------------------------:|:-------------------------------------------------------------------------------:|
+| <img src="https://img.qimuu.icu/typory/wxzs.jpg" alt="Wechat QRcode" width=180/> | <img src="https://img.qimuu.icu/typory/zfb.jpg" alt="Alipay QRcode" width=170/> |
 
 ### 有趣研究社
 

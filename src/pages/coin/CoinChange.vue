@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import {reactive} from "vue";
-import {UserControllerService, UserVO} from "../services/moguding-backend";
+import {UserControllerService, UserVO} from "../../services/moguding-backend";
 import {showFailToast, showSuccessToast} from "vant";
 
 interface State {

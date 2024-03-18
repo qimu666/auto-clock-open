@@ -24,7 +24,7 @@
 import {onMounted, reactive} from "vue";
 import {showConfirmDialog, showSuccessToast} from "vant";
 import {useRouter} from "vue-router";
-import {PlatformInfo, PlatformInfoControllerService} from "../services/moguding-backend";
+import {PlatformInfo, PlatformInfoControllerService} from "../../../services/moguding-backend";
 
 const router = useRouter();
 

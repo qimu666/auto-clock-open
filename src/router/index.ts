@@ -9,7 +9,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: "/login",
         name: "登录",
-        component: () => import("../pages/Login.vue"),
+        component: () => import("../pages/user/Login.vue"),
     },
     {
         path: "/clockInfo",
@@ -19,47 +19,47 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: "/register",
         name: "注册",
-        component: () => import("../pages/Register.vue"),
+        component: () => import("../pages/user/Register.vue"),
     },
     {
         path: "/mall",
         name: "积分商城",
-        component: () => import("../pages/Mall.vue"),
-    },
-    {
-        path: "/clockInfo/detailed/:id",
-        name: "详细信息",
-        component: () => import("../pages/DetailedClockInfo.vue"),
+        component: () => import("../pages/mall/Mall.vue"),
     },
     {
         path: "/moguding",
         name: "工学云",
-        component: () => import("../pages/MoGuDing.vue"),
+        component: () => import("../pages/platform/gxy/MoGuDing.vue"),
     },
     {
         path: "/zxjy",
         name: "职校家园",
-        component: () => import("../pages/zxjy/ZXJY.vue"),
+        component: () => import("../pages/platform/zxjy/ZXJY.vue"),
     },
     {
         path: "/gxy/update",
         name: "修改信息-工学云",
-        component: () => import("../pages/UpdateMoGuDing.vue"),
+        component: () => import("../pages/platform/gxy/UpdateMoGuDing.vue"),
     },
     {
         path: "/zxjy/update",
         name: "修改信息-职校家园",
-        component: () => import("../pages/zxjy/UpdateZXJY.vue"),
+        component: () => import("../pages/platform/zxjy/UpdateZXJY.vue"),
     },
     {
         path: "/system",
         name: "系统管理",
-        component: () => import("../pages/System.vue"),
+        component: () => import("../pages/system/System.vue"),
+    },
+    {
+        path: "/transferCoin",
+        name: "积分转账",
+        component: () => import("../pages/coin/TransferCoin.vue"),
     },
     {
         path: "/coinChange",
         name: "积分变更",
-        component: () => import("../pages/CoinChange.vue"),
+        component: () => import("../pages/coin/CoinChange.vue"),
     }, {
         path: "/500",
         name: "500",
@@ -68,52 +68,47 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: "/mall_management",
         name: "商城管理",
-        component: () => import("../pages/MallManagement.vue"),
+        component: () => import("../pages/mall/MallManagement.vue"),
     },
     {
         path: "/platform_management",
         name: "平台管理",
-        component: () => import("../pages/PlatformManagement.vue"),
+        component: () => import("../pages/platform/platformSystem/PlatformManagement.vue"),
     },
     {
         path: "/add_platform",
         name: "添加平台",
-        component: () => import("../pages/AddPlatform.vue"),
+        component: () => import("../pages/platform/platformSystem/AddPlatform.vue"),
     },
     {
         path: "/coin_detail",
         name: "积分明细",
-        component: () => import("../pages/CoinDetail.vue"),
+        component: () => import("../pages/coin/CoinDetail.vue"),
     },
     {
         path: "/update_platform",
         name: "更新平台",
-        component: () => import("../pages/UpdatePlatform.vue"),
+        component: () => import("../pages/platform/platformSystem/UpdatePlatform.vue"),
     },
     {
         path: "/update_mall",
         name: "修改积分规格",
-        component: () => import("../pages/UpdateMall.vue"),
+        component: () => import("../pages/mall/UpdateMall.vue"),
     },
     {
         path: "/add_mall",
         name: "增加积分规格",
-        component: () => import("../pages/AddMall.vue"),
+        component: () => import("../pages/mall/AddMall.vue"),
     },
     {
         path: "/notice",
         name: "消息通知",
-        component: () => import("../pages/Notice.vue"),
-    },
-    {
-        path: "/userCenter",
-        name: "个人中心",
-        component: () => import("../pages/UserCenter.vue"),
+        component: () => import("../pages/system/Notice.vue"),
     },
     {
         path: "/about",
         name: "我的",
-        component: () => import("../pages/AboutView.vue"),
+        component: () => import("../pages/user/AboutView.vue"),
     },
 ];
 
