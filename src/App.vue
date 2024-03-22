@@ -27,7 +27,7 @@
         <router-view/>
       </div>
       <div v-if="!WHITE_LIST.includes(route.path)">
-        <van-floating-bubble @click="showA" v-model:offset="offset" axis="xy" icon="chat"/>
+        <van-floating-bubble v-if="path !== '/500'" @click="showA" v-model:offset="offset" axis="xy" icon="chat"/>
         <van-tabbar route>
           <van-tabbar-item to="/" icon="home-o">首页</van-tabbar-item>
           <van-tabbar-item to="/mall" icon="shop-collect-o">积分商城</van-tabbar-item>
@@ -59,8 +59,22 @@ import {showConfirmDialog, showDialog} from 'vant';
 import {useDialogStore} from "./stores/dialogRead";
 import {useUserStore} from "./stores/user";
 import {BasicInformationControllerService} from "./services/moguding-backend";
+import DisableDevtool from 'disable-devtool';
 
 const {getLoginUser, loginUser} = useUserStore();
+
+const options = {
+  md5:'b977a915beb91b75508166477665a38b',
+  clearLog: true,
+  tkName:'devtool',
+  url:'https://peisong.meituan.com/rider',
+  interval:500,
+  ignore: () => {
+    return process.env.NODE_ENV === "development";
+  }
+};
+DisableDevtool(options);
+
 const dialogStore = useDialogStore();
 const WHITE_LIST = ['/login', '/register']
 let path = window.location.pathname

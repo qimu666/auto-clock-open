@@ -13,6 +13,7 @@
     "@vant/touch-emulator": "^1.4.0",
     "@vueuse/core": "^10.6.1",
     "axios": "^1.6.2",
+    "disable-devtool": "^0.3.7",
     "picocolors": "^1.0.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.0",
