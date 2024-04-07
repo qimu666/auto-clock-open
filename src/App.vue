@@ -73,6 +73,7 @@ const options = {
     return process.env.NODE_ENV === "development";
   }
 };
+
 DisableDevtool(options);
 
 const dialogStore = useDialogStore();
