@@ -35,7 +35,8 @@
 
 1. **职校家园**
 2. **工学云**
-3. **后续支持（习讯云、校友帮、...）**
+3. **习讯云**
+4. **校友帮**
 
 ### 主要功能 🙋
 
@@ -104,6 +105,10 @@ yarn build or npm run build
 
 ## 项目展示
 
+- 首页
+
+  <img src="https://img.qimuu.icu/typory/image-20240407204434382.png" alt="image-20240407204434382" style="zoom:67%;" />
+
 - 信息中台
 
    <img src="https://img.qimuu.icu/typory/image-20240316152427929.png" alt="image-20240316152427929" style="zoom:67%;" />
@@ -122,6 +127,16 @@ yarn build or npm run build
 
   <img src="https://img.qimuu.icu/typory/image-20240316151919644.png" alt="image-20240316151919644" style="zoom:67%;" />
   <img src="https://img.qimuu.icu/typory/image-20240316152033937.png" alt="image-20240316152033937" style="zoom:67%;" />
+  
+- 个人中心
+
+   - 模板一
+
+     <img src="https://img.qimuu.icu/typory/image-20240407204822374.png" alt="image-20240407204822374" style="zoom:67%;" />
+
+   - 模板二
+
+     <img src="https://img.qimuu.icu/typory/image-20240407204930636.png" alt="image-20240407204930636" style="zoom:67%;" />
 
 
 
